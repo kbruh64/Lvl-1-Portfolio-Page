@@ -2,213 +2,205 @@ class PuzzleScene extends Phaser.Scene {
     constructor() {
         super({ key: 'PuzzleScene' });
         this.GRID = 3;
-        this.TILE = 120;
-        this.GAP = 6;
+        this.TILE = 118;
+        this.GAP  = 8;
     }
 
     create() {
         const W = this.scale.width;
         const H = this.scale.height;
 
-        this.moves = 0;
+        this.moves   = 0;
         this.seconds = 0;
         this.running = false;
-        this.solved = false;
-        this.tiles = [];            // GameObjects
-        this.state = [];            // tile values, 0 = blank
+        this.solved  = false;
+        this.tileObjs = [];
+        this.state   = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 
         this.drawBg(W, H);
         this.buildUI(W, H);
-        this.initPuzzle(W, H);
+        this.renderGrid(W, H);
     }
 
     drawBg(W, H) {
+        this.add.rectangle(0, 0, W, H, 0xf0f4ff).setOrigin(0, 0);
         const g = this.add.graphics();
-        g.fillGradientStyle(0x0a0a1a, 0x0a0a1a, 0x0a0a2e, 0x0a0a2e, 1);
-        g.fillRect(0, 0, W, H);
-
-        g.lineStyle(1, 0x111133, 0.5);
-        for (let x = 0; x < W; x += 50) g.lineBetween(x, 0, x, H);
-        for (let y = 0; y < H; y += 50) g.lineBetween(0, y, W, y);
+        g.fillStyle(0xd0d8ff, 0.4);
+        for (let x = 30; x < W; x += 40)
+            for (let y = 30; y < H; y += 40)
+                g.fillCircle(x, y, 1.5);
     }
 
     buildUI(W, H) {
+        // Header
+        const hg = this.add.graphics();
+        hg.fillStyle(0xffffff); hg.fillRect(0, 0, W, 72);
+        hg.lineStyle(2, 0xdde8ff); hg.lineBetween(0, 72, W, 72);
+        hg.fillStyle(0x3355dd); hg.fillRect(0, 69, W, 3);
+
         // Back
         const back = this.add.text(20, 20, '[ < BACK ]', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '10px', color: '#556677'
+            fontSize: '10px', color: '#99aabb'
         }).setInteractive({ cursor: 'pointer' });
-        back.on('pointerover', () => back.setColor('#aabbcc'));
-        back.on('pointerout',  () => back.setColor('#556677'));
+        back.on('pointerover', () => back.setColor('#3355dd'));
+        back.on('pointerout',  () => back.setColor('#99aabb'));
         back.on('pointerdown', () => this.scene.start('MainScene'));
 
         // Title
-        this.add.text(W / 2, 40, 'SLIDING PUZZLE', {
+        this.add.text(W / 2, 36, 'SLIDING PUZZLE', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '24px', color: '#6699ff',
-            stroke: '#001133', strokeThickness: 6
+            fontSize: '22px', color: '#3355dd'
         }).setOrigin(0.5);
 
-        // Stats
-        this.movesText = this.add.text(W / 2 - 180, 90, 'MOVES: 0', {
+        // Stats panel
+        const sp = this.add.graphics();
+        sp.fillStyle(0xffffff); sp.fillRoundedRect(W / 2 - 280, 85, 560, 58, 10);
+        sp.lineStyle(1.5, 0xdde8ff); sp.strokeRoundedRect(W / 2 - 280, 85, 560, 58, 10);
+
+        this.add.text(W / 2 - 200, 100, 'MOVES', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '12px', color: '#6699ff'
+            fontSize: '8px', color: '#aabbcc'
+        }).setOrigin(0.5);
+        this.movesVal = this.add.text(W / 2 - 200, 120, '0', {
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '16px', color: '#3355dd'
         }).setOrigin(0.5);
 
-        this.timeText = this.add.text(W / 2 + 180, 90, 'TIME: 0s', {
+        const dv = this.add.graphics();
+        dv.lineStyle(1, 0xdde8ff); dv.lineBetween(W / 2, 90, W / 2, 138);
+
+        this.add.text(W / 2 + 200, 100, 'TIME', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '12px', color: '#ffcc44'
+            fontSize: '8px', color: '#aabbcc'
+        }).setOrigin(0.5);
+        this.timeVal = this.add.text(W / 2 + 200, 120, '0s', {
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '16px', color: '#ff9900'
         }).setOrigin(0.5);
 
-        this.add.text(W / 2, 90, '|', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '12px', color: '#334455'
-        }).setOrigin(0.5);
-
-        // Hint
-        this.hintText = this.add.text(W / 2, H - 90, 'CLICK A TILE NEXT TO THE BLANK TO MOVE IT', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '8px', color: '#334466'
-        }).setOrigin(0.5);
+        // Bottom bar
+        const bbar = this.add.graphics();
+        bbar.fillStyle(0xffffff); bbar.fillRect(0, H - 60, W, 60);
+        bbar.lineStyle(2, 0xdde8ff); bbar.lineBetween(0, H - 60, W, H - 60);
+        bbar.fillStyle(0x3355dd); bbar.fillRect(0, H - 60, W, 3);
 
         // Scramble button
-        const scrbtn = this.add.text(W / 2 - 100, H - 45, '[ SCRAMBLE ]', {
+        const scr = this.add.text(W / 2 - 130, H - 30, '[ SCRAMBLE ]', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '11px', color: '#6699ff'
+            fontSize: '11px', color: '#3355dd'
         }).setOrigin(0.5).setInteractive({ cursor: 'pointer' });
-        scrbtn.on('pointerover', () => scrbtn.setColor('#aabbff'));
-        scrbtn.on('pointerout',  () => scrbtn.setColor('#6699ff'));
-        scrbtn.on('pointerdown', () => this.scramblePuzzle());
+        scr.on('pointerover', () => scr.setColor('#0033bb'));
+        scr.on('pointerout',  () => scr.setColor('#3355dd'));
+        scr.on('pointerdown', () => this.scramble());
 
-        // Best score
+        // Best
         const best = localStorage.getItem('puzzle_best');
-        this.bestText = this.add.text(W / 2 + 150, H - 45, best ? 'BEST: ' + best + ' MOVES' : '', {
+        this.bestText = this.add.text(W / 2 + 180, H - 30,
+            best ? 'BEST: ' + best + ' MOVES' : 'SCRAMBLE TO START', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '9px', color: '#445566'
+            fontSize: '8px', color: '#aabbcc'
+        }).setOrigin(0.5);
+
+        // Status text
+        this.statusText = this.add.text(W / 2, H - 30, '', {
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '10px', color: '#209950'
         }).setOrigin(0.5);
     }
 
-    initPuzzle(W, H) {
-        // Solved state
-        this.state = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-        this.renderTiles(W, H);
-    }
+    renderGrid(W, H) {
+        // Destroy old tiles
+        this.tileObjs.forEach(o => {
+            if (!o) return;
+            o.bg.destroy();
+            o.num.destroy();
+            o.zone.destroy();
+        });
+        this.tileObjs = [];
 
-    renderTiles(W, H) {
-        // Destroy existing tiles
-        this.tiles.forEach(t => { if (t) t.destroy(); });
-        this.tiles = [];
+        const cell   = this.TILE + this.GAP;
+        const gridPx = this.GRID * cell - this.GAP;
+        const ox = W / 2 - gridPx / 2;
+        const oy = H / 2 - gridPx / 2 + 25;
 
-        const cellSize = this.TILE + this.GAP;
-        const gridPx = this.GRID * cellSize - this.GAP;
-        const originX = W / 2 - gridPx / 2;
-        const originY = H / 2 - gridPx / 2 + 20;
+        // Board bg
+        if (this.boardBg) this.boardBg.destroy();
+        this.boardBg = this.add.graphics();
+        this.boardBg.fillStyle(0xe8ecff);
+        this.boardBg.fillRoundedRect(ox - 12, oy - 12, gridPx + 24, gridPx + 24, 14);
 
-        this.tileOriginX = originX;
-        this.tileOriginY = originY;
+        // Tile colours (pastel blues / purples)
+        const TILE_COLS = [
+            0x4466ff, 0x5577ff, 0x6688ff,
+            0x3355ee, 0x4466ff, 0x5577ff,
+            0x2244dd, 0x3355ee, 0x4466ff
+        ];
 
         this.state.forEach((val, idx) => {
             const col = idx % this.GRID;
             const row = Math.floor(idx / this.GRID);
-            const tx = originX + col * cellSize + this.TILE / 2;
-            const ty = originY + row * cellSize + this.TILE / 2;
+            const tx  = ox + col * cell + this.TILE / 2;
+            const ty  = oy + row * cell + this.TILE / 2;
 
             if (val === 0) {
-                this.tiles.push(null); // blank slot
+                // Empty slot
+                const eg = this.add.graphics();
+                eg.fillStyle(0xd0d8ff);
+                eg.fillRoundedRect(tx - this.TILE / 2, ty - this.TILE / 2, this.TILE, this.TILE, 10);
+                this.tileObjs.push(null);
                 return;
             }
 
-            const tileContainer = this.createTile(tx, ty, val, idx);
-            this.tiles.push(tileContainer);
+            const T = this.TILE;
+            const bg = this.add.graphics();
+            const drawTile = (hover) => {
+                bg.clear();
+                bg.fillStyle(hover ? TILE_COLS[(val - 1) % TILE_COLS.length] + 0x222222 : TILE_COLS[(val - 1) % TILE_COLS.length]);
+                bg.fillRoundedRect(tx - T / 2, ty - T / 2, T, T, 10);
+                bg.fillStyle(0xffffff, 0.18);
+                bg.fillRoundedRect(tx - T / 2 + 5, ty - T / 2 + 5, T - 10, T / 4, { tl: 8, tr: 8, bl: 0, br: 0 });
+            };
+            drawTile(false);
+
+            const num = this.add.text(tx, ty, String(val), {
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: '32px', color: '#ffffff',
+                stroke: '#002299', strokeThickness: 4
+            }).setOrigin(0.5).setDepth(2);
+
+            const zone = this.add.zone(tx, ty, this.TILE, this.TILE)
+                .setInteractive({ cursor: 'pointer' }).setDepth(3);
+
+            zone.on('pointerover', () => drawTile(true));
+            zone.on('pointerout',  () => drawTile(false));
+            zone.on('pointerdown', () => this.tryMove(idx));
+
+            this.tileObjs.push({ bg, num, zone });
         });
-    }
-
-    createTile(tx, ty, val, stateIdx) {
-        const T = this.TILE;
-
-        // Colors per tile for visual variety
-        const colors = [
-            0x1133aa, 0x2244bb, 0x3355cc,
-            0x1144aa, 0x2255bb, 0x3366cc,
-            0x1155aa, 0x2266bb, 0x3377cc
-        ];
-        const col = colors[(val - 1) % colors.length];
-
-        const bg = this.add.graphics();
-        bg.fillStyle(col, 1);
-        bg.fillRoundedRect(tx - T / 2, ty - T / 2, T, T, 10);
-        bg.fillStyle(0xffffff, 0.08);
-        bg.fillRoundedRect(tx - T / 2 + 3, ty - T / 2 + 3, T - 6, T / 3, { tl: 8, tr: 8, bl: 0, br: 0 });
-        bg.lineStyle(2, 0x6699ff, 0.5);
-        bg.strokeRoundedRect(tx - T / 2, ty - T / 2, T, T, 10);
-
-        const numTxt = this.add.text(tx, ty, String(val), {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '28px',
-            color: '#ffffff',
-            stroke: '#001133',
-            strokeThickness: 4
-        }).setOrigin(0.5);
-
-        // Interactive zone
-        const zone = this.add.zone(tx, ty, T, T).setInteractive({ cursor: 'pointer' });
-
-        zone.on('pointerover', () => {
-            bg.clear();
-            bg.fillStyle(col + 0x222222, 1);
-            bg.fillRoundedRect(tx - T / 2, ty - T / 2, T, T, 10);
-            bg.lineStyle(2, 0xaabbff, 0.8);
-            bg.strokeRoundedRect(tx - T / 2, ty - T / 2, T, T, 10);
-        });
-
-        zone.on('pointerout', () => {
-            bg.clear();
-            bg.fillStyle(col, 1);
-            bg.fillRoundedRect(tx - T / 2, ty - T / 2, T, T, 10);
-            bg.fillStyle(0xffffff, 0.08);
-            bg.fillRoundedRect(tx - T / 2 + 3, ty - T / 2 + 3, T - 6, T / 3, { tl: 8, tr: 8, bl: 0, br: 0 });
-            bg.lineStyle(2, 0x6699ff, 0.5);
-            bg.strokeRoundedRect(tx - T / 2, ty - T / 2, T, T, 10);
-        });
-
-        zone.on('pointerdown', () => this.tryMove(stateIdx));
-
-        // Group them so we can track
-        const group = { bg, numTxt, zone, stateIdx };
-        return group;
     }
 
     tryMove(tileIdx) {
+        if (this.solved) return;
         const blankIdx = this.state.indexOf(0);
-        const row = Math.floor(tileIdx / this.GRID);
-        const col = tileIdx % this.GRID;
-        const bRow = Math.floor(blankIdx / this.GRID);
-        const bCol = blankIdx % this.GRID;
+        const dr = Math.abs(Math.floor(tileIdx / 3) - Math.floor(blankIdx / 3));
+        const dc = Math.abs((tileIdx % 3) - (blankIdx % 3));
+        if (dr + dc !== 1) return;
 
-        const adjacent = (Math.abs(row - bRow) + Math.abs(col - bCol)) === 1;
-        if (!adjacent) return;
-
-        // Swap
         [this.state[tileIdx], this.state[blankIdx]] = [this.state[blankIdx], this.state[tileIdx]];
 
         this.moves++;
-        this.movesText.setText('MOVES: ' + this.moves);
+        this.movesVal.setText(String(this.moves));
 
         if (!this.running) {
             this.running = true;
             this.ticker = this.time.addEvent({
                 delay: 1000, repeat: -1,
-                callback: () => {
-                    this.seconds++;
-                    this.timeText.setText('TIME: ' + this.seconds + 's');
-                }
+                callback: () => { this.seconds++; this.timeVal.setText(this.seconds + 's'); }
             });
         }
 
-        // Re-render
-        const W = this.scale.width, H = this.scale.height;
-        this.renderTiles(W, H);
-
+        this.renderGrid(this.scale.width, this.scale.height);
         if (this.isSolved()) this.winGame();
     }
 
@@ -216,63 +208,58 @@ class PuzzleScene extends Phaser.Scene {
         return this.state.every((v, i) => i === 8 ? v === 0 : v === i + 1);
     }
 
-    scramblePuzzle() {
+    scramble() {
         if (this.ticker) this.ticker.remove();
-        this.moves = 0;
-        this.seconds = 0;
-        this.running = false;
-        this.solved = false;
-        this.movesText.setText('MOVES: 0');
-        this.timeText.setText('TIME: 0s');
-        this.hintText.setText('CLICK A TILE NEXT TO THE BLANK TO MOVE IT').setColor('#334466');
+        this.moves = 0; this.seconds = 0; this.running = false; this.solved = false;
+        this.movesVal.setText('0');
+        this.timeVal.setText('0s');
+        this.statusText.setText('');
+        this.bestText.setText(localStorage.getItem('puzzle_best')
+            ? 'BEST: ' + localStorage.getItem('puzzle_best') + ' MOVES'
+            : 'SOLVE IT!');
 
-        // Start solved and make random valid moves
         let s = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-        let lastBlank = -1;
-        for (let i = 0; i < 80; i++) {
-            const blank = s.indexOf(0);
-            const r = Math.floor(blank / 3), c = blank % 3;
-            const neighbours = [];
-            if (r > 0) neighbours.push(blank - 3);
-            if (r < 2) neighbours.push(blank + 3);
-            if (c > 0) neighbours.push(blank - 1);
-            if (c < 2) neighbours.push(blank + 1);
-            const filtered = neighbours.filter(n => n !== lastBlank);
-            const pick = filtered.length > 0 ? filtered : neighbours;
-            const target = pick[Math.floor(Math.random() * pick.length)];
-            [s[blank], s[target]] = [s[target], s[blank]];
-            lastBlank = blank;
+        let prev = -1;
+        for (let i = 0; i < 100; i++) {
+            const b = s.indexOf(0);
+            const r = Math.floor(b / 3), c = b % 3;
+            const nbrs = [];
+            if (r > 0) nbrs.push(b - 3);
+            if (r < 2) nbrs.push(b + 3);
+            if (c > 0) nbrs.push(b - 1);
+            if (c < 2) nbrs.push(b + 1);
+            const opts = nbrs.filter(n => n !== prev);
+            const pick = (opts.length ? opts : nbrs)[Math.floor(Math.random() * (opts.length || nbrs.length))];
+            [s[b], s[pick]] = [s[pick], s[b]];
+            prev = b;
         }
         this.state = s;
-        this.renderTiles(this.scale.width, this.scale.height);
+        this.renderGrid(this.scale.width, this.scale.height);
     }
 
     winGame() {
         this.solved = true;
-        this.running = false;
         if (this.ticker) this.ticker.remove();
 
-        const best = parseInt(localStorage.getItem('puzzle_best') || '9999');
-        const isNew = this.moves < best;
+        const prev  = parseInt(localStorage.getItem('puzzle_best') || '9999');
+        const isNew = this.moves < prev;
         if (isNew) localStorage.setItem('puzzle_best', this.moves);
-        this.bestText.setText('BEST: ' + (isNew ? this.moves : best) + ' MOVES');
 
-        const W = this.scale.width, H = this.scale.height;
-        this.hintText.setText(
+        this.statusText.setText(
             isNew
-                ? '★ SOLVED! NEW BEST: ' + this.moves + ' MOVES IN ' + this.seconds + 's! ★'
-                : '★ SOLVED IN ' + this.moves + ' MOVES AND ' + this.seconds + 's! ★'
-        ).setColor(isNew ? '#ffee00' : '#00ff88');
+                ? '★ NEW BEST: ' + this.moves + ' MOVES IN ' + this.seconds + 's!'
+                : 'SOLVED! ' + this.moves + ' MOVES IN ' + this.seconds + 's'
+        ).setColor(isNew ? '#e03060' : '#209950');
 
-        // Celebration tweens on tiles
-        this.tiles.forEach((t, i) => {
+        this.bestText.setText('BEST: ' + (isNew ? this.moves : prev) + ' MOVES');
+
+        // Bounce all tiles
+        this.tileObjs.forEach((t, i) => {
             if (!t) return;
-            this.time.delayedCall(i * 60, () => {
+            this.time.delayedCall(i * 55, () => {
                 this.tweens.add({
-                    targets: [t.bg, t.numTxt],
-                    scaleX: 1.12, scaleY: 1.12,
-                    duration: 150,
-                    yoyo: true
+                    targets: t.num, scaleX: 1.25, scaleY: 1.25,
+                    duration: 130, yoyo: true
                 });
             });
         });

@@ -1,94 +1,97 @@
 class CPSScene extends Phaser.Scene {
     constructor() {
         super({ key: 'CPSScene' });
-        this.DURATION = 10; // seconds
+        this.DURATION = 10;
     }
 
     create() {
         const W = this.scale.width;
         const H = this.scale.height;
 
-        this.clicks = 0;
-        this.started = false;
+        this.clicks   = 0;
+        this.started  = false;
         this.finished = false;
         this.remaining = this.DURATION;
 
-        this.drawBg(W, H);
+        // Light background
+        this.add.rectangle(0, 0, W, H, 0xfff0f4).setOrigin(0, 0);
+        const dots = this.add.graphics();
+        dots.fillStyle(0xffccdd, 0.5);
+        for (let x = 30; x < W; x += 40)
+            for (let y = 30; y < H; y += 40)
+                dots.fillCircle(x, y, 1.5);
+
         this.buildUI(W, H);
     }
 
-    drawBg(W, H) {
-        const g = this.add.graphics();
-        g.fillGradientStyle(0x0a0a1a, 0x0a0a1a, 0x1a0a2a, 0x1a0a2a, 1);
-        g.fillRect(0, 0, W, H);
-
-        // Grid lines
-        g.lineStyle(1, 0x220033, 0.4);
-        for (let x = 0; x < W; x += 60) g.lineBetween(x, 0, x, H);
-        for (let y = 0; y < H; y += 60) g.lineBetween(0, y, W, y);
-    }
-
     buildUI(W, H) {
-        // Back button
-        const back = this.add.text(20, 20, '[ < BACK ]', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '10px',
-            color: '#556677'
-        }).setInteractive({ cursor: 'pointer' });
-        back.on('pointerover', () => back.setColor('#aabbcc'));
-        back.on('pointerout',  () => back.setColor('#556677'));
+        // Back
+        const back = this.makeBackBtn(20, 20);
         back.on('pointerdown', () => this.scene.start('MainScene'));
 
-        // Title
-        this.add.text(W / 2, 60, 'CPS TEST', {
+        // Title bar
+        const hg = this.add.graphics();
+        hg.fillStyle(0xffffff);
+        hg.fillRect(0, 0, W, 72);
+        hg.lineStyle(2, 0xffddee);
+        hg.lineBetween(0, 72, W, 72);
+        hg.fillStyle(0xe03060);
+        hg.fillRect(0, 69, W, 3);
+
+        this.add.text(W / 2, 36, 'CPS TEST', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '28px',
-            color: '#ff6699',
-            stroke: '#330011',
-            strokeThickness: 6
+            fontSize: '24px',
+            color: '#e03060'
         }).setOrigin(0.5);
 
-        this.add.text(W / 2, 105, 'CLICK AS FAST AS YOU CAN FOR 10 SECONDS', {
+        // Timer display
+        this.timerText = this.add.text(W / 2, 155, '10.0', {
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '64px',
+            color: '#1a1a3a'
+        }).setOrigin(0.5);
+
+        this.add.text(W / 2, 222, 'SECONDS REMAINING', {
             fontFamily: "'Press Start 2P', monospace",
             fontSize: '8px',
-            color: '#885566'
+            color: '#99aabb'
         }).setOrigin(0.5);
 
-        // Timer arc / ring display
-        this.timerText = this.add.text(W / 2, 195, '10.0', {
+        // Stats row
+        const statBg = this.add.graphics();
+        statBg.fillStyle(0xffffff);
+        statBg.fillRoundedRect(W / 2 - 260, 255, 520, 70, 12);
+        statBg.lineStyle(1.5, 0xffddee);
+        statBg.strokeRoundedRect(W / 2 - 260, 255, 520, 70, 12);
+
+        this.add.text(W / 2 - 130, 270, 'CLICKS', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '52px',
-            color: '#ffffff'
+            fontSize: '8px', color: '#aabbcc'
         }).setOrigin(0.5);
-
-        this.add.text(W / 2, 255, 'SECONDS', {
+        this.clicksVal = this.add.text(W / 2 - 130, 295, '0', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '9px',
-            color: '#554455'
+            fontSize: '18px', color: '#e03060'
         }).setOrigin(0.5);
 
-        // Click counter
-        this.clicksText = this.add.text(W / 2 - 160, 310, 'CLICKS\n0', {
+        // Divider
+        const div = this.add.graphics();
+        div.lineStyle(1, 0xffddee);
+        div.lineBetween(W / 2, 260, W / 2, 320);
+
+        this.add.text(W / 2 + 130, 270, 'CPS', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '14px',
-            color: '#ff6699',
-            align: 'center'
+            fontSize: '8px', color: '#aabbcc'
         }).setOrigin(0.5);
-
-        // CPS display
-        this.cpsText = this.add.text(W / 2 + 160, 310, 'CPS\n0.0', {
+        this.cpsVal = this.add.text(W / 2 + 130, 295, '0.0', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '14px',
-            color: '#ffcc44',
-            align: 'center'
+            fontSize: '18px', color: '#ff9900'
         }).setOrigin(0.5);
 
-        // High score
+        // Best score
         const hs = parseFloat(localStorage.getItem('cps_highscore') || '0');
-        this.highText = this.add.text(W / 2, 365, 'BEST: ' + hs.toFixed(1) + ' CPS', {
+        this.bestText = this.add.text(W / 2, 350, 'PERSONAL BEST: ' + hs.toFixed(1) + ' CPS', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '9px',
-            color: '#556677'
+            fontSize: '9px', color: '#99aabb'
         }).setOrigin(0.5);
 
         // Big click button
@@ -96,41 +99,34 @@ class CPSScene extends Phaser.Scene {
     }
 
     buildClickButton(W, H) {
-        const bx = W / 2, by = H / 2 + 85, bw = 420, bh = 110;
-
+        const bx = W / 2, by = H / 2 + 100, bw = 440, bh = 120;
         this.btnGfx = this.add.graphics();
-        this.btnZone = this.add.zone(bx, by, bw, bh).setInteractive({ cursor: 'pointer' });
-
-        this.drawBtn(false);
-
-        this.btnZone.on('pointerover', () => this.drawBtn(true));
-        this.btnZone.on('pointerout',  () => this.drawBtn(false));
-        this.btnZone.on('pointerdown', () => this.handleClick());
-
         this.btnLabel = this.add.text(bx, by, 'CLICK HERE!', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '20px',
-            color: '#ffffff'
-        }).setOrigin(0.5);
+            fontSize: '22px', color: '#ffffff'
+        }).setOrigin(0.5).setDepth(2);
+
+        this.btnZone = this.add.zone(bx, by, bw, bh)
+            .setInteractive({ cursor: 'pointer' }).setDepth(3);
+
+        this.drawBtn(false);
+        this.btnZone.on('pointerover', () => this.drawBtn(true));
+        this.btnZone.on('pointerout',  () => this.drawBtn(this.started));
+        this.btnZone.on('pointerdown', () => this.handleClick());
     }
 
-    drawBtn(hover) {
-        const bx = this.scale.width / 2, by = this.scale.height / 2 + 85;
-        const bw = 420, bh = 110;
+    drawBtn(active) {
+        const W = this.scale.width, H = this.scale.height;
+        const bx = W / 2, by = H / 2 + 100, bw = 440, bh = 120;
         this.btnGfx.clear();
-        if (hover || this.started) {
-            this.btnGfx.fillStyle(0x550033, 0.9);
-            this.btnGfx.fillRoundedRect(bx - bw / 2, by - bh / 2, bw, bh, 14);
-        }
-        this.btnGfx.lineStyle(3, 0xff6699, this.started ? 1 : 0.6);
-        this.btnGfx.strokeRoundedRect(bx - bw / 2, by - bh / 2, bw, bh, 14);
+        this.btnGfx.fillStyle(active ? 0xe03060 : 0xff5588, 1);
+        this.btnGfx.fillRoundedRect(bx - bw / 2, by - bh / 2, bw, bh, 16);
+        this.btnGfx.fillStyle(0xffffff, 0.15);
+        this.btnGfx.fillRoundedRect(bx - bw / 2 + 8, by - bh / 2 + 8, bw - 16, bh / 3, { tl: 12, tr: 12, bl: 0, br: 0 });
     }
 
     handleClick() {
-        if (this.finished) {
-            this.resetGame();
-            return;
-        }
+        if (this.finished) { this.resetGame(); return; }
 
         if (!this.started) {
             this.started = true;
@@ -141,83 +137,73 @@ class CPSScene extends Phaser.Scene {
                 callbackScope: this
             });
             this.btnLabel.setText('CLICKING...');
-            this.drawBtn(false);
+            this.drawBtn(true);
         }
 
         this.clicks++;
-        this.clicksText.setText('CLICKS\n' + this.clicks);
+        this.clicksVal.setText(String(this.clicks));
 
         const elapsed = this.DURATION - this.remaining;
-        if (elapsed > 0) {
-            this.cpsText.setText('CPS\n' + (this.clicks / elapsed).toFixed(1));
-        }
+        if (elapsed > 0) this.cpsVal.setText((this.clicks / elapsed).toFixed(1));
 
-        // Ripple feedback
-        const bx = this.scale.width / 2, by = this.scale.height / 2 + 85;
-        const circle = this.add.circle(bx, by, 20, 0xff6699, 0.6);
+        // Click ripple
+        const W = this.scale.width, H = this.scale.height;
+        const c = this.add.circle(W / 2, H / 2 + 100, 18, 0xffffff, 0.5);
         this.tweens.add({
-            targets: circle,
-            scaleX: 5, scaleY: 5,
-            alpha: 0,
-            duration: 300,
-            onComplete: () => circle.destroy()
+            targets: c, scaleX: 6, scaleY: 6, alpha: 0, duration: 280,
+            onComplete: () => c.destroy()
         });
     }
 
     tick() {
-        this.remaining -= 0.1;
-        this.remaining = Math.max(0, this.remaining);
+        this.remaining = Math.max(0, this.remaining - 0.1);
         this.timerText.setText(this.remaining.toFixed(1));
-
-        // Colour shifts as time runs low
-        if (this.remaining <= 3) {
-            this.timerText.setColor('#ff4444');
-        } else if (this.remaining <= 6) {
-            this.timerText.setColor('#ffaa00');
-        }
-
-        if (this.remaining <= 0) {
-            this.endGame();
-        }
+        if (this.remaining <= 3)      this.timerText.setColor('#e03060');
+        else if (this.remaining <= 6) this.timerText.setColor('#ff9900');
+        if (this.remaining <= 0) this.endGame();
     }
 
     endGame() {
         this.finished = true;
         const cps = this.clicks / this.DURATION;
+        const hs  = parseFloat(localStorage.getItem('cps_highscore') || '0');
+        const isNew = cps > hs;
+        if (isNew) localStorage.setItem('cps_highscore', cps.toFixed(2));
 
-        const hs = parseFloat(localStorage.getItem('cps_highscore') || '0');
-        const isNewBest = cps > hs;
-        if (isNewBest) localStorage.setItem('cps_highscore', cps.toFixed(2));
-
-        this.btnLabel.setText(isNewBest ? 'NEW BEST!\n' + cps.toFixed(1) + ' CPS' : cps.toFixed(1) + ' CPS\nCLICK TO RETRY');
+        const W = this.scale.width, H = this.scale.height;
+        const bx = W / 2, by = H / 2 + 100, bw = 440, bh = 120;
         this.btnGfx.clear();
-        this.btnGfx.fillStyle(isNewBest ? 0x004422 : 0x222244, 0.9);
-        this.btnGfx.fillRoundedRect(
-            this.scale.width / 2 - 210,
-            this.scale.height / 2 + 85 - 55,
-            420, 110, 14
-        );
-        this.btnGfx.lineStyle(3, isNewBest ? 0x00ff88 : 0x6699ff);
-        this.btnGfx.strokeRoundedRect(
-            this.scale.width / 2 - 210,
-            this.scale.height / 2 + 85 - 55,
-            420, 110, 14
-        );
+        this.btnGfx.fillStyle(isNew ? 0x209950 : 0x3355dd, 1);
+        this.btnGfx.fillRoundedRect(bx - bw / 2, by - bh / 2, bw, bh, 16);
 
-        this.highText.setText('BEST: ' + (isNewBest ? cps : hs).toFixed(1) + ' CPS' + (isNewBest ? '  ★ NEW!' : ''));
-        this.highText.setColor(isNewBest ? '#00ff88' : '#556677');
+        this.btnLabel.setText(
+            isNew
+                ? '★ NEW BEST: ' + cps.toFixed(1) + ' CPS!\nCLICK TO RETRY'
+                : cps.toFixed(1) + ' CPS\nCLICK TO RETRY'
+        ).setAlign('center');
+
+        this.bestText.setText('PERSONAL BEST: ' + (isNew ? cps : hs).toFixed(1) + ' CPS' + (isNew ? '  ★' : ''));
+        this.bestText.setColor(isNew ? '#209950' : '#99aabb');
     }
 
     resetGame() {
-        this.clicks = 0;
-        this.started = false;
-        this.finished = false;
+        this.clicks = 0; this.started = false; this.finished = false;
         this.remaining = this.DURATION;
         if (this.timerEvent) this.timerEvent.remove();
-        this.timerText.setText('10.0').setColor('#ffffff');
-        this.clicksText.setText('CLICKS\n0');
-        this.cpsText.setText('CPS\n0.0');
+        this.timerText.setText('10.0').setColor('#1a1a3a');
+        this.clicksVal.setText('0');
+        this.cpsVal.setText('0.0');
         this.btnLabel.setText('CLICK HERE!');
         this.drawBtn(false);
+    }
+
+    makeBackBtn(x, y) {
+        const btn = this.add.text(x, y, '[ < BACK ]', {
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '10px', color: '#99aabb'
+        }).setInteractive({ cursor: 'pointer' }).setDepth(10);
+        btn.on('pointerover', () => btn.setColor('#3344dd'));
+        btn.on('pointerout',  () => btn.setColor('#99aabb'));
+        return btn;
     }
 }

@@ -1,48 +1,69 @@
 // ============================================================
-//  EDIT YOUR PROJECTS HERE
+//  YOUR PROJECTS — edit name, description, url, tech as needed
 // ============================================================
 const PROJECTS = [
     {
-        id: 'proj1',
-        name: 'Project Alpha',
-        description: 'A cool web application with modern UI',
-        url: '#',
+        id: 'super-bros',
+        name: 'Super Bros',
+        description: 'Two-player platform fighter with themes & SFX',
+        url: 'https://super-bros-dun.vercel.app/',
         tech: ['HTML', 'CSS', 'JS']
     },
     {
-        id: 'proj2',
-        name: 'Project Beta',
-        description: 'Python automation and scripting tool',
-        url: '#',
-        tech: ['Python']
+        id: 'snake-io',
+        name: 'Snake.io',
+        description: 'Multiplayer snake with skins & leaderboard',
+        url: 'https://snake-io-iota.vercel.app/',
+        tech: ['HTML', 'Canvas', 'JS']
     },
     {
-        id: 'proj3',
-        name: 'Game Engine',
-        description: 'Custom 2D game engine from scratch',
-        url: '#',
-        tech: ['C++', 'OpenGL']
+        id: 'image-animator',
+        name: 'Image Animator',
+        description: 'AI-powered image animator & GIF frame extractor',
+        url: 'https://image-animator-gamma.vercel.app/',
+        tech: ['TensorFlow.js', 'Canvas']
     },
     {
-        id: 'proj4',
-        name: 'Discord Bot',
-        description: 'Feature-rich Discord bot with commands',
-        url: '#',
-        tech: ['Node.js']
-    },
-    {
-        id: 'proj5',
-        name: 'Portfolio Page',
-        description: 'This very page — built with Phaser.js!',
-        url: '#',
+        id: '2player-shooter',
+        name: '2 Player Shooter',
+        description: 'Local co-op Phaser shooter with weapons & health',
+        url: 'https://2playergameyay.vercel.app/',
         tech: ['Phaser.js', 'JS']
     },
     {
-        id: 'proj6',
-        name: 'API Service',
-        description: 'REST API with auth and database',
+        id: 'nutella-sandwich',
+        name: 'Nutella Sandwich',
+        description: 'Interactive Phaser tutorial — step by step guide',
+        url: 'https://how-to-make-a-nutella-sandwich.vercel.app/',
+        tech: ['Phaser.js', 'JS']
+    },
+    {
+        id: 'mace-time',
+        name: 'Mace Time',
+        description: 'Smash mobs with a Minecraft mace — action game',
         url: '#',
-        tech: ['Express', 'MongoDB']
+        tech: ['JS']
+    },
+    {
+        id: '2d-minecraft',
+        name: '2D Minecraft',
+        description: 'Minecraft — but in 2D, fully in the browser',
+        url: '#',
+        tech: ['Canvas', 'JS']
+    },
+    {
+        id: 'click-it',
+        name: 'Click It!',
+        description: 'Idle clicker with 40+ skins, dimensions & achievements',
+        url: 'https://first-repo-gray.vercel.app/',
+        tech: ['HTML', 'CSS', 'JS']
+    },
+    {
+        id: 'voidpet-dungeon',
+        name: 'Voidpet Dungeon',
+        description: 'Canvas dungeon adventure with void creatures',
+        url: 'https://monsterpet-dungeon.vercel.app/',
+        tech: ['Canvas', 'JS']
     }
 ];
 
@@ -52,37 +73,31 @@ const PROJECTS = [
 //  To change: open browser console and run:
 //    crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourpassword'))
 //      .then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
-//  Then paste the result below.
+//  Paste the result below.
 // ============================================================
 const ADMIN_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
 
 // ============================================================
-//  STATUS DEFINITIONS  (do not edit unless you want new status types)
+//  STATUS DEFINITIONS
 // ============================================================
 const STATUS_TYPES = {
-    GOOD:        { label: 'GOOD',        color: 0x00ff88, hex: '#00ff88' },
-    MAINTENANCE: { label: 'MAINTENANCE', color: 0xffaa00, hex: '#ffaa00' },
-    BROKEN:      { label: 'BROKEN',      color: 0xff4444, hex: '#ff4444' }
+    GOOD:        { label: 'GOOD',        color: 0x22cc66, hex: '#22cc66' },
+    MAINTENANCE: { label: 'MAINTENANCE', color: 0xff9900, hex: '#ff9900' },
+    BROKEN:      { label: 'BROKEN',      color: 0xff3333, hex: '#ff3333' }
 };
-
-// ---- helpers ----
 
 function getProjectStatus(id) {
     return localStorage.getItem('status_' + id) || 'GOOD';
 }
-
 function setProjectStatus(id, status) {
     localStorage.setItem('status_' + id, status);
 }
-
 function isAdminLoggedIn() {
     return sessionStorage.getItem('admin_auth') === 'true';
 }
-
 function setAdminLoggedIn(val) {
     sessionStorage.setItem('admin_auth', val ? 'true' : 'false');
 }
-
 async function checkPassword(input) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
     const hex = [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('');

@@ -3,8 +3,7 @@ const gameConfig = {
     width: 1280,
     height: 720,
     parent: 'game-container',
-    backgroundColor: '#0a0a1a',
-    dom: { createContainer: true },
+    backgroundColor: '#f4f6ff',
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH

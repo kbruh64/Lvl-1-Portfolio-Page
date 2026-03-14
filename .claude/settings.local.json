@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:how-to-make-a-nutella-sandwich.vercel.app)",
+      "WebFetch(domain:2d-minecraft-kpjmo0bpt-felix-aos-projects.vercel.app)"
+    ]
+  }
+}

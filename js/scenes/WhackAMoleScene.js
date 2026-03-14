@@ -3,40 +3,6 @@ class WhackAMoleScene extends Phaser.Scene {
         super({ key: 'WhackAMoleScene' });
     }
 
-    preload() {
-        // Generate mole texture
-        const mg = this.make.graphics({ add: false });
-        // Mole body
-        mg.fillStyle(0x6b3a2a); mg.fillCircle(40, 45, 34);
-        // Face lighter
-        mg.fillStyle(0x8a5040); mg.fillEllipse(40, 50, 40, 32);
-        // Eyes
-        mg.fillStyle(0x111111); mg.fillCircle(28, 38, 6); mg.fillCircle(52, 38, 6);
-        mg.fillStyle(0xffffff); mg.fillCircle(30, 36, 2); mg.fillCircle(54, 36, 2);
-        // Nose
-        mg.fillStyle(0xee6677); mg.fillEllipse(40, 52, 14, 10);
-        // Teeth
-        mg.fillStyle(0xffffff);
-        mg.fillRect(34, 57, 5, 6);
-        mg.fillRect(41, 57, 5, 6);
-        mg.generateTexture('mole', 80, 80);
-        mg.destroy();
-
-        // Mole hit (stars/yellow flash)
-        const hg = this.make.graphics({ add: false });
-        hg.fillStyle(0xffee00); hg.fillCircle(40, 40, 38);
-        hg.fillStyle(0xffffff); hg.fillCircle(40, 40, 28);
-        hg.generateTexture('mole_hit', 80, 80);
-        hg.destroy();
-
-        // Hole texture
-        const holG = this.make.graphics({ add: false });
-        holG.fillStyle(0x1a0f08); holG.fillEllipse(55, 22, 100, 42);
-        holG.fillStyle(0x2d1a10); holG.fillEllipse(55, 16, 96, 34);
-        holG.generateTexture('hole', 110, 50);
-        holG.destroy();
-    }
-
     create() {
         const W = this.scale.width;
         const H = this.scale.height;
@@ -46,8 +12,8 @@ class WhackAMoleScene extends Phaser.Scene {
         this.timeLeft = 30;
         this.reactionTimes = [];
         this.moles = [];
-        this.moleTimers = [];
         this.spawnTimer = null;
+        this.countdownTimer = null;
 
         this.drawBg(W, H);
         this.buildUI(W, H);
@@ -56,66 +22,91 @@ class WhackAMoleScene extends Phaser.Scene {
     }
 
     drawBg(W, H) {
+        // Sky
+        this.add.rectangle(0, 0, W, H * 0.45, 0xdbeeff).setOrigin(0, 0);
+        // Grass
+        this.add.rectangle(0, H * 0.45, W, H * 0.55, 0xd4f0c0).setOrigin(0, 0);
+
+        // Grass texture blobs
         const g = this.add.graphics();
-        g.fillGradientStyle(0x0a0a1a, 0x0a0a1a, 0x0a1a0a, 0x0a1a0a, 1);
-        g.fillRect(0, 0, W, H);
-        // Dirt-ish ground texture hints
-        g.fillStyle(0x1a1210, 0.3);
-        for (let i = 0; i < 60; i++) {
-            g.fillCircle(
+        g.fillStyle(0xbbdd99, 0.5);
+        for (let i = 0; i < 30; i++) {
+            g.fillEllipse(
                 Phaser.Math.Between(0, W),
-                Phaser.Math.Between(200, H),
-                Phaser.Math.Between(3, 12)
+                Phaser.Math.Between(H * 0.45, H),
+                Phaser.Math.Between(40, 120), 20
             );
         }
+
+        // Clouds
+        [200, 500, 900, 1150].forEach(cx => {
+            const cy = Phaser.Math.Between(60, 140);
+            const cg = this.add.graphics();
+            cg.fillStyle(0xffffff, 0.8);
+            cg.fillEllipse(cx, cy, 100, 40);
+            cg.fillEllipse(cx + 30, cy - 12, 70, 35);
+            cg.fillEllipse(cx - 25, cy - 8, 60, 30);
+        });
     }
 
     buildUI(W, H) {
+        // Top bar
+        const hg = this.add.graphics().setDepth(10);
+        hg.fillStyle(0xffffff, 0.95);
+        hg.fillRect(0, 0, W, 68);
+        hg.lineStyle(2, 0xd4f0c0);
+        hg.lineBetween(0, 68, W, 68);
+        hg.fillStyle(0x209950);
+        hg.fillRect(0, 65, W, 3);
+
         // Back
         const back = this.add.text(20, 20, '[ < BACK ]', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '10px', color: '#556677'
-        }).setInteractive({ cursor: 'pointer' });
-        back.on('pointerover', () => back.setColor('#aabbcc'));
-        back.on('pointerout',  () => back.setColor('#556677'));
-        back.on('pointerdown', () => {
-            this.clearAllTimers();
-            this.scene.start('MainScene');
-        });
+            fontSize: '10px', color: '#99aabb'
+        }).setDepth(11).setInteractive({ cursor: 'pointer' });
+        back.on('pointerover', () => back.setColor('#209950'));
+        back.on('pointerout',  () => back.setColor('#99aabb'));
+        back.on('pointerdown', () => { this.clearTimers(); this.scene.start('MainScene'); });
 
         // Title
-        this.add.text(W / 2, 38, 'WHACK-A-MOLE', {
+        this.add.text(W / 2, 34, 'WHACK-A-MOLE', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '24px', color: '#66ff99',
-            stroke: '#003311', strokeThickness: 6
-        }).setOrigin(0.5);
+            fontSize: '22px', color: '#209950'
+        }).setOrigin(0.5).setDepth(11);
 
-        // Score
-        this.scoreText = this.add.text(W / 2 - 230, 85, 'SCORE: 0', {
+        // Score / Time
+        this.scoreText = this.add.text(W / 2 - 250, 34, 'SCORE: 0', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '13px', color: '#66ff99'
-        }).setOrigin(0.5);
+            fontSize: '12px', color: '#1a5a2a'
+        }).setOrigin(0.5).setDepth(11);
 
-        // Timer
-        this.timerText = this.add.text(W / 2 + 230, 85, 'TIME: 30', {
+        this.timerText = this.add.text(W / 2 + 250, 34, 'TIME: 30', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '13px', color: '#ffcc44'
-        }).setOrigin(0.5);
+            fontSize: '12px', color: '#cc6600'
+        }).setOrigin(0.5).setDepth(11);
 
-        // Avg reaction
-        this.reactionText = this.add.text(W / 2, 85, 'AVG REACTION: --ms', {
+        // Bottom info bar
+        const bg2 = this.add.graphics().setDepth(10);
+        bg2.fillStyle(0xffffff, 0.85);
+        bg2.fillRect(0, H - 50, W, 50);
+
+        this.reactionText = this.add.text(W / 2, H - 25, 'HIT A MOLE TO SEE YOUR REACTION TIME!', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '9px', color: '#8899aa'
-        }).setOrigin(0.5);
+            fontSize: '8px', color: '#668866'
+        }).setOrigin(0.5).setDepth(11);
     }
 
     buildGrid(W, H) {
         const COLS = 3, ROWS = 3;
-        const HOLE_W = 130, HOLE_H = 80, GAP_X = 55, GAP_Y = 20;
+        const HOLE_W = 120, HOLE_H = 50;
+        const GAP_X = 60, GAP_Y = 35;
         const CELL_W = HOLE_W + GAP_X;
-        const CELL_H = HOLE_H + GAP_Y;
-        const startX = W / 2 - (COLS * CELL_W) / 2 + CELL_W / 2;
-        const startY = 200;
+        const CELL_H = HOLE_H + GAP_Y + 60;
+
+        const gridW = COLS * CELL_W - GAP_X;
+        const gridH = ROWS * CELL_H - GAP_Y;
+        const startX = W / 2 - gridW / 2 + HOLE_W / 2;
+        const startY = 120;
 
         this.moles = [];
 
@@ -124,39 +115,44 @@ class WhackAMoleScene extends Phaser.Scene {
                 const mx = startX + c * CELL_W;
                 const my = startY + r * CELL_H;
 
-                // Hole (dirt background circle)
-                const dirtGfx = this.add.graphics();
-                dirtGfx.fillStyle(0x2a1810, 1);
-                dirtGfx.fillEllipse(mx, my + 10, HOLE_W, HOLE_H * 0.55);
-                dirtGfx.fillStyle(0x1a0f08, 1);
-                dirtGfx.fillEllipse(mx, my + 6, HOLE_W - 20, HOLE_H * 0.4);
+                // Hole mound (dirt)
+                const dg = this.add.graphics();
+                dg.fillStyle(0xb8860b, 0.5);
+                dg.fillEllipse(mx, my + 28, HOLE_W + 20, 30);
+                dg.fillStyle(0x8B6914, 0.8);
+                dg.fillEllipse(mx, my + 22, HOLE_W, 24);
 
-                // Mole image (hidden below hole)
-                const moleImg = this.add.image(mx, my + 50, 'mole')
-                    .setOrigin(0.5, 1)
-                    .setScale(1.1)
-                    .setAlpha(0);
+                // Mole body (drawn as circle + features, clipped behind hole)
+                const moleGfx = this.add.graphics().setDepth(2);
+                moleGfx.fillStyle(0x8B5A2B);
+                moleGfx.fillCircle(mx, my - 10, 34);
+                moleGfx.fillStyle(0xd4956a);
+                moleGfx.fillEllipse(mx, my, 28, 22);
+                // Eyes
+                moleGfx.fillStyle(0x222222);
+                moleGfx.fillCircle(mx - 10, my - 18, 5);
+                moleGfx.fillCircle(mx + 10, my - 18, 5);
+                moleGfx.fillStyle(0xffffff);
+                moleGfx.fillCircle(mx - 8, my - 20, 2);
+                moleGfx.fillCircle(mx + 12, my - 20, 2);
+                // Nose
+                moleGfx.fillStyle(0xff7799);
+                moleGfx.fillEllipse(mx, my - 8, 10, 7);
+                moleGfx.setAlpha(0);
 
-                // Hole overlay (covers mole when hidden)
-                const holeGfx = this.add.graphics();
-                holeGfx.fillStyle(0x1a0f08, 1);
-                holeGfx.fillEllipse(mx, my + 28, HOLE_W - 4, HOLE_H * 0.38);
+                // Hole cover (drawn on top to hide mole when down)
+                const holeCover = this.add.graphics().setDepth(4);
+                holeCover.fillStyle(0x8B6914);
+                holeCover.fillEllipse(mx, my + 22, HOLE_W, 24);
 
-                const moleData = {
-                    x: mx, y: my,
-                    img: moleImg,
-                    active: false,
-                    hitTime: 0
-                };
+                // Click zone
+                const zone = this.add.zone(mx, my, HOLE_W + 10, HOLE_H + 60)
+                    .setInteractive({ cursor: 'pointer' }).setDepth(5);
 
-                // Click zone for this mole
-                const zone = this.add.zone(mx, my + 10, HOLE_W, HOLE_H)
-                    .setInteractive({ cursor: 'pointer' });
+                const moleData = { x: mx, y: my, gfx: moleGfx, active: false, hitTime: 0, hideTimer: null };
 
                 zone.on('pointerdown', () => {
-                    if (moleData.active && this.gameActive) {
-                        this.whackMole(moleData);
-                    }
+                    if (moleData.active && this.gameActive) this.whackMole(moleData);
                 });
 
                 this.moles.push(moleData);
@@ -165,24 +161,29 @@ class WhackAMoleScene extends Phaser.Scene {
     }
 
     buildStartOverlay(W, H) {
-        this.overlay = this.add.graphics();
-        this.overlay.fillStyle(0x000000, 0.55);
+        this.overlay = this.add.graphics().setDepth(20);
+        this.overlay.fillStyle(0xffffff, 0.7);
         this.overlay.fillRect(0, 0, W, H);
 
-        this.startText = this.add.text(W / 2, H / 2 - 30, 'CLICK TO START!', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '24px', color: '#66ff99',
-            stroke: '#003311', strokeThickness: 5
-        }).setOrigin(0.5);
+        const panel = this.add.graphics().setDepth(21);
+        panel.fillStyle(0x209950, 1);
+        panel.fillRoundedRect(W / 2 - 280, H / 2 - 80, 560, 160, 16);
 
-        this.add.text(W / 2, H / 2 + 20, 'WHACK MOLES AS FAST AS POSSIBLE', {
+        this.add.text(W / 2, H / 2 - 30, 'CLICK TO START!', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '9px', color: '#557766'
-        }).setOrigin(0.5);
+            fontSize: '22px', color: '#ffffff'
+        }).setOrigin(0.5).setDepth(22);
+
+        this.add.text(W / 2, H / 2 + 20, 'WHACK MOLES AS FAST AS POSSIBLE  ·  30 SECONDS', {
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '8px', color: '#aaffcc'
+        }).setOrigin(0.5).setDepth(22);
 
         this.input.once('pointerdown', () => {
             this.overlay.destroy();
-            this.startText.destroy();
+            this.children.list
+                .filter(c => c.depth === 21 || c.depth === 22)
+                .forEach(c => c.destroy());
             this.startGame();
         });
     }
@@ -199,79 +200,61 @@ class WhackAMoleScene extends Phaser.Scene {
             callback: () => {
                 this.timeLeft--;
                 this.timerText.setText('TIME: ' + this.timeLeft);
-                if (this.timeLeft <= 5) this.timerText.setColor('#ff4444');
+                if (this.timeLeft <= 5) this.timerText.setColor('#cc0000');
                 if (this.timeLeft <= 0) this.endGame();
             }
         });
 
-        this.scheduleNextMole();
+        this.scheduleMole();
     }
 
-    scheduleNextMole() {
+    scheduleMole() {
         if (!this.gameActive) return;
-        const delay = Phaser.Math.Between(600, 1600);
-        this.spawnTimer = this.time.delayedCall(delay, () => {
-            this.spawnMole();
-            this.scheduleNextMole();
-        });
+        this.spawnTimer = this.time.delayedCall(
+            Phaser.Math.Between(600, 1400),
+            () => { this.spawnMole(); this.scheduleMole(); }
+        );
     }
 
     spawnMole() {
-        // Pick a random inactive mole
         const inactive = this.moles.filter(m => !m.active);
-        if (inactive.length === 0) return;
+        if (!inactive.length) return;
         const mole = Phaser.Utils.Array.GetRandom(inactive);
 
         mole.active = true;
         mole.hitTime = this.time.now;
-        mole.img.setTexture('mole').setAlpha(1);
+        mole.gfx.setAlpha(1);
 
-        // Pop up tween
-        this.tweens.add({
-            targets: mole.img,
-            y: mole.y - 10,
-            duration: 180,
-            ease: 'Back.easeOut'
-        });
+        this.tweens.add({ targets: mole.gfx, y: mole.y - 38, duration: 160, ease: 'Back.Out' });
 
-        // Auto-hide after visible window
-        const hideDelay = Phaser.Math.Between(900, 1500);
-        mole.hideTimer = this.time.delayedCall(hideDelay, () => {
-            if (mole.active) this.hideMole(mole);
-        });
+        mole.hideTimer = this.time.delayedCall(
+            Phaser.Math.Between(900, 1600),
+            () => { if (mole.active) this.hideMole(mole); }
+        );
     }
 
     whackMole(mole) {
-        const reaction = this.time.now - mole.hitTime;
-        this.reactionTimes.push(reaction);
+        const rt = this.time.now - mole.hitTime;
+        this.reactionTimes.push(rt);
         this.score += 10;
         this.scoreText.setText('SCORE: ' + this.score);
 
-        const avg = Math.round(this.reactionTimes.reduce((a, b) => a + b, 0) / this.reactionTimes.length);
-        this.reactionText.setText('AVG REACTION: ' + avg + 'ms');
+        const avg = Math.round(this.reactionTimes.reduce((a, b) => a + b) / this.reactionTimes.length);
+        this.reactionText.setText('AVG REACTION: ' + avg + 'ms   ·   BEST: ' + Math.min(...this.reactionTimes) + 'ms');
 
-        // Hit flash
-        mole.img.setTexture('mole_hit');
         if (mole.hideTimer) mole.hideTimer.remove();
 
-        // Star burst
-        for (let i = 0; i < 6; i++) {
-            const star = this.add.text(
-                mole.x + Phaser.Math.Between(-30, 30),
-                mole.y + Phaser.Math.Between(-40, -10),
-                '+10', {
-                    fontFamily: "'Press Start 2P', monospace",
-                    fontSize: '10px', color: '#ffee00'
-                }
-            );
-            this.tweens.add({
-                targets: star,
-                y: star.y - 40,
-                alpha: 0,
-                duration: 500,
-                onComplete: () => star.destroy()
-            });
-        }
+        // Flash mole yellow
+        mole.gfx.clear();
+        mole.gfx.fillStyle(0xffee00); mole.gfx.fillCircle(mole.x, mole.y - 48, 34);
+        mole.gfx.fillStyle(0xffffff); mole.gfx.fillCircle(mole.x, mole.y - 48, 22);
+
+        // Score pop
+        const pop = this.add.text(mole.x, mole.y - 60, '+10', {
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: '14px', color: '#209950'
+        }).setOrigin(0.5).setDepth(15);
+        this.tweens.add({ targets: pop, y: pop.y - 50, alpha: 0, duration: 500, onComplete: () => pop.destroy() });
 
         this.time.delayedCall(200, () => this.hideMole(mole));
     }
@@ -279,72 +262,80 @@ class WhackAMoleScene extends Phaser.Scene {
     hideMole(mole) {
         mole.active = false;
         this.tweens.add({
-            targets: mole.img,
-            y: mole.y + 50,
-            duration: 160,
-            onComplete: () => mole.img.setAlpha(0)
+            targets: mole.gfx,
+            y: mole.y,
+            duration: 140,
+            onComplete: () => { mole.gfx.setAlpha(0); this.resetMoleGfx(mole); }
         });
+    }
+
+    resetMoleGfx(mole) {
+        const mx = mole.x, my = mole.y;
+        mole.gfx.clear();
+        mole.gfx.fillStyle(0x8B5A2B); mole.gfx.fillCircle(mx, my - 10, 34);
+        mole.gfx.fillStyle(0xd4956a); mole.gfx.fillEllipse(mx, my, 28, 22);
+        mole.gfx.fillStyle(0x222222);
+        mole.gfx.fillCircle(mx - 10, my - 18, 5); mole.gfx.fillCircle(mx + 10, my - 18, 5);
+        mole.gfx.fillStyle(0xffffff);
+        mole.gfx.fillCircle(mx - 8, my - 20, 2); mole.gfx.fillCircle(mx + 12, my - 20, 2);
+        mole.gfx.fillStyle(0xff7799); mole.gfx.fillEllipse(mx, my - 8, 10, 7);
     }
 
     endGame() {
         this.gameActive = false;
-        this.clearAllTimers();
+        this.clearTimers();
 
         const W = this.scale.width, H = this.scale.height;
-        const avg = this.reactionTimes.length
-            ? Math.round(this.reactionTimes.reduce((a, b) => a + b, 0) / this.reactionTimes.length)
-            : 0;
+        const avg  = this.reactionTimes.length
+            ? Math.round(this.reactionTimes.reduce((a, b) => a + b) / this.reactionTimes.length) : 0;
+        const best = this.reactionTimes.length ? Math.min(...this.reactionTimes) : 0;
 
-        // Results overlay
-        const ov = this.add.graphics();
-        ov.fillStyle(0x000000, 0.75);
-        ov.fillRect(0, 0, W, H);
+        // Results panel
+        const ov = this.add.graphics().setDepth(30);
+        ov.fillStyle(0xffffff, 0.85); ov.fillRect(0, 0, W, H);
 
-        this.add.text(W / 2, H / 2 - 120, 'GAME OVER!', {
+        const panel = this.add.graphics().setDepth(31);
+        panel.fillStyle(0x209950); panel.fillRoundedRect(W / 2 - 330, H / 2 - 170, 660, 340, 18);
+
+        this.add.text(W / 2, H / 2 - 130, 'TIME\'S UP!', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '30px', color: '#66ff99',
-            stroke: '#003311', strokeThickness: 6
-        }).setOrigin(0.5);
+            fontSize: '28px', color: '#ffffff'
+        }).setOrigin(0.5).setDepth(32);
 
-        this.add.text(W / 2, H / 2 - 55, 'SCORE: ' + this.score, {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '20px', color: '#ffffff'
-        }).setOrigin(0.5);
+        [
+            ['SCORE',         this.score + ' PTS'],
+            ['MOLES HIT',     this.reactionTimes.length],
+            ['AVG REACTION',  avg ? avg + 'ms' : '--'],
+            ['BEST REACTION', best ? best + 'ms' : '--']
+        ].forEach(([label, val], i) => {
+            this.add.text(W / 2 - 180, H / 2 - 70 + i * 48, label + ':', {
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: '10px', color: '#aaffcc'
+            }).setDepth(32);
+            this.add.text(W / 2 + 180, H / 2 - 70 + i * 48, String(val), {
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: '10px', color: '#ffffff'
+            }).setOrigin(1, 0).setDepth(32);
+        });
 
-        this.add.text(W / 2, H / 2, 'MOLES HIT: ' + this.reactionTimes.length, {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '13px', color: '#aabbcc'
-        }).setOrigin(0.5);
-
-        this.add.text(W / 2, H / 2 + 45, 'AVG REACTION: ' + (avg || '--') + 'ms', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '13px', color: '#ffcc44'
-        }).setOrigin(0.5);
-
-        // High score
         const prevBest = parseInt(localStorage.getItem('mole_highscore') || '0');
         if (this.score > prevBest) localStorage.setItem('mole_highscore', this.score);
-        const best = Math.max(this.score, prevBest);
-        this.add.text(W / 2, H / 2 + 90, 'BEST SCORE: ' + best, {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '10px', color: '#556677'
-        }).setOrigin(0.5);
 
-        // Retry / Back buttons
-        const retry = this.add.text(W / 2 - 120, H / 2 + 150, '[ RETRY ]', {
+        // Buttons
+        const retryBtn = this.add.text(W / 2 - 100, H / 2 + 140, '[ RETRY ]', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '13px', color: '#66ff99'
-        }).setOrigin(0.5).setInteractive({ cursor: 'pointer' });
-        retry.on('pointerdown', () => this.scene.restart());
+            fontSize: '12px', color: '#ffffff'
+        }).setOrigin(0.5).setDepth(32).setInteractive({ cursor: 'pointer' });
+        retryBtn.on('pointerdown', () => this.scene.restart());
 
-        const backBtn = this.add.text(W / 2 + 120, H / 2 + 150, '[ BACK ]', {
+        const backBtn = this.add.text(W / 2 + 100, H / 2 + 140, '[ BACK ]', {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '13px', color: '#aabbcc'
-        }).setOrigin(0.5).setInteractive({ cursor: 'pointer' });
+            fontSize: '12px', color: '#aaffcc'
+        }).setOrigin(0.5).setDepth(32).setInteractive({ cursor: 'pointer' });
         backBtn.on('pointerdown', () => this.scene.start('MainScene'));
     }
 
-    clearAllTimers() {
+    clearTimers() {
         if (this.spawnTimer) this.spawnTimer.remove();
         if (this.countdownTimer) this.countdownTimer.remove();
         this.moles.forEach(m => { if (m.hideTimer) m.hideTimer.remove(); });
