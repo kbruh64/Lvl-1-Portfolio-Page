@@ -38,7 +38,7 @@ class AdminScene extends Phaser.Scene {
         hg.fillRect(0, 69, W, 3);
 
         const back = this.add.text(20, 20, '[ < BACK ]', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '10px', color: '#aabbcc'
         }).setInteractive({ cursor: 'pointer' });
         back.on('pointerover', () => back.setColor('#ff9900'));
@@ -46,7 +46,7 @@ class AdminScene extends Phaser.Scene {
         back.on('pointerdown', () => this.scene.start('MainScene'));
 
         this.add.text(W / 2, 36, isAdminLoggedIn() ? 'ADMIN PANEL' : 'ADMIN LOGIN', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '20px', color: '#ff9900'
         }).setOrigin(0.5);
     }
@@ -55,7 +55,7 @@ class AdminScene extends Phaser.Scene {
 
     showLogin(W, H) {
         this.add.text(W / 2, 108, 'ENTER YOUR PASSWORD TO MANAGE PROJECT STATUSES', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '7px', color: '#cc8822'
         }).setOrigin(0.5);
 
@@ -67,12 +67,12 @@ class AdminScene extends Phaser.Scene {
         ibg.strokeRoundedRect(W / 2 - 190, H / 2 - 38, 380, 76, 12);
 
         this.add.text(W / 2, H / 2 - 22, 'PASSWORD', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '7px', color: '#ccaa66'
         }).setOrigin(0.5);
 
         this.inputDisplay = this.add.text(W / 2, H / 2 + 10, '|', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '20px', color: '#1a1a3a'
         }).setOrigin(0.5);
 
@@ -98,12 +98,12 @@ class AdminScene extends Phaser.Scene {
         this.makeBtn(W / 2, H / 2 + 90, 160, 42, 'LOGIN', '#ff9900', 0xff9900, () => this.doLogin());
 
         this.errorText = this.add.text(W / 2, H / 2 + 158, '', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '10px', color: '#ee3333'
         }).setOrigin(0.5);
 
         this.add.text(W / 2, H - 36, 'DEFAULT PASSWORD: admin   ·   CHANGE HASH IN js/config.js', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '7px', color: '#ddccbb'
         }).setOrigin(0.5);
     }
@@ -131,7 +131,7 @@ class AdminScene extends Phaser.Scene {
 
     showPanel(W, H) {
         this.add.text(W / 2, 105, 'CLICK A STATUS TO CHANGE IT  ·  OTHERS ONLY SEE, NOT CHANGE', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '7px', color: '#cc8822'
         }).setOrigin(0.5);
 
@@ -176,22 +176,22 @@ class AdminScene extends Phaser.Scene {
 
         // Name
         this.add.text(x + 16, y + 10, proj.name.toUpperCase(), {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '8px', color: '#1a1a3a',
             wordWrap: { width: w - 220 }
         });
 
         // Current status label
         this.add.text(x + 16, y + h - 18, '● ' + status, {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '6px', color: sInfo.hex
         });
 
         // Status buttons
         const btns = [
-            { key: 'GOOD',        label: 'GOOD',  info: STATUS_TYPES.GOOD },
-            { key: 'MAINTENANCE', label: 'MAINT', info: STATUS_TYPES.MAINTENANCE },
-            { key: 'BROKEN',      label: 'BRKN',  info: STATUS_TYPES.BROKEN }
+            { key: 'GOOD',        label: '✅ works', info: STATUS_TYPES.GOOD },
+            { key: 'MAINTENANCE', label: '🔧 fixing', info: STATUS_TYPES.MAINTENANCE },
+            { key: 'BROKEN',      label: '💀 rip',   info: STATUS_TYPES.BROKEN }
         ];
 
         const bw = 60, bh = h - 20, gap = 5;
@@ -213,7 +213,7 @@ class AdminScene extends Phaser.Scene {
             draw(false);
 
             const txt = this.add.text(bx + bw / 2, bStartY + bh / 2, btn.label, {
-                fontFamily: "'Press Start 2P', monospace",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: '6px',
                 color: isActive ? '#ffffff' : btn.info.hex
             }).setOrigin(0.5).setInteractive({ cursor: 'pointer' });
@@ -239,7 +239,7 @@ class AdminScene extends Phaser.Scene {
         draw(false);
 
         const txt = this.add.text(cx, cy, label, {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '11px', color: col
         }).setOrigin(0.5).setInteractive({ cursor: 'pointer' });
 

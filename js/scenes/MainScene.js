@@ -73,8 +73,8 @@ class MainScene extends Phaser.Scene {
             g.fillRect(i * segW, this.HEADER_H - 4, segW + 1, 4);
         });
 
-        this.add.text(W / 2, this.HEADER_H / 2 - 2, "★  FELIX'S PORTFOLIO  ★", {
-            fontFamily: "'Press Start 2P', monospace",
+        this.add.text(W / 2, this.HEADER_H / 2 - 2, "🎮  felix's stuff  🎮", {
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '24px', color: '#2244ee',
             stroke: '#aabbff', strokeThickness: 4
         }).setOrigin(0.5).setDepth(51).setInteractive({ cursor: 'pointer' })
@@ -87,7 +87,7 @@ class MainScene extends Phaser.Scene {
 
         if (this.isAdmin) {
             this.add.text(W - 14, 18, '[ ADMIN ]', {
-                fontFamily: "'Press Start 2P', monospace",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: '11px', color: '#ffffff',
                 backgroundColor: '#ff8800', padding: { x: 9, y: 6 }
             }).setOrigin(1, 0).setDepth(51).setInteractive({ cursor: 'pointer' })
@@ -95,8 +95,8 @@ class MainScene extends Phaser.Scene {
         }
 
         if (this.maxScroll > 0) {
-            this.add.text(W / 2, this.HEADER_H - 13, '▼ scroll to see more ▼', {
-                fontFamily: "'Press Start 2P', monospace",
+            this.add.text(W / 2, this.HEADER_H - 13, '👇 scroll for more', {
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: '7px', color: '#8899cc'
             }).setOrigin(0.5, 1).setDepth(51);
         }
@@ -141,7 +141,7 @@ class MainScene extends Phaser.Scene {
             draw(false);
 
             this.add.text(cx, cy, def.label, {
-                fontFamily: "'Press Start 2P', monospace",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: '13px', color: def.col
             }).setOrigin(0.5).setDepth(52).setInteractive({ cursor: 'pointer' })
               .on('pointerover', () => draw(true))
@@ -226,14 +226,14 @@ class MainScene extends Phaser.Scene {
 
         // Project name
         this.track(this.add.text(x + 22, y + 20, proj.name.toUpperCase(), {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '15px', color: nameCol,
             wordWrap: { width: w - 140 }
         }).setDepth(5));
 
         // Status badge
         this.track(this.add.text(x + w - 10, y + 20, '● ' + sInfo.label, {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '9px', color: sInfo.hex
         }).setOrigin(1, 0).setDepth(5));
 
@@ -244,7 +244,7 @@ class MainScene extends Phaser.Scene {
 
         // Description
         this.track(this.add.text(x + 22, y + 62, proj.description, {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Poppins', sans-serif",
             fontSize: '10px', color: '#334488',
             wordWrap: { width: w - 36 }, lineSpacing: 6
         }).setDepth(5));
@@ -262,7 +262,7 @@ class MainScene extends Phaser.Scene {
             tg.fillRoundedRect(tagX, 0, tw, 22, 5);
 
             this.track(this.add.text(tagX + tw / 2, tagAbsY + 11, tag, {
-                fontFamily: "'Press Start 2P', monospace",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: '8px', color: pal.tx
             }).setOrigin(0.5).setDepth(6));
 
@@ -285,9 +285,9 @@ class MainScene extends Phaser.Scene {
 
     addStatusButtons(proj, x, y, w, h) {
         const btns = [
-            { key: 'GOOD',        label: 'GOOD',  info: STATUS_TYPES.GOOD },
-            { key: 'MAINTENANCE', label: 'MAINT', info: STATUS_TYPES.MAINTENANCE },
-            { key: 'BROKEN',      label: 'BRKN',  info: STATUS_TYPES.BROKEN }
+            { key: 'GOOD',        label: '✅ works', info: STATUS_TYPES.GOOD },
+            { key: 'MAINTENANCE', label: '🔧 fixing', info: STATUS_TYPES.MAINTENANCE },
+            { key: 'BROKEN',      label: '💀 rip',   info: STATUS_TYPES.BROKEN }
         ];
 
         const bh      = 26, gap = 6;
@@ -312,7 +312,7 @@ class MainScene extends Phaser.Scene {
 
             const txt = this.track(
                 this.add.text(bx + bw / 2, btnAbsY + bh / 2, btn.label, {
-                    fontFamily: "'Press Start 2P', monospace",
+                    fontFamily: "'Poppins', sans-serif",
                     fontSize: '8px',
                     color: isActive ? '#ffffff' : btn.info.hex
                 }).setOrigin(0.5).setDepth(8).setInteractive({ cursor: 'pointer' })
