@@ -87,10 +87,11 @@ const ADMIN_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81
 // ============================================================
 //  STATUS DEFINITIONS
 // ============================================================
+// Stitch "Editorial Voxelism" status palette
 const STATUS_TYPES = {
-    GOOD:        { label: '✅ works',      color: 0x22cc66, hex: '#22cc66' },
-    MAINTENANCE: { label: '🔧 fixing...',  color: 0xff9900, hex: '#ff9900' },
-    BROKEN:      { label: '💀 rip',        color: 0xff3333, hex: '#ff3333' }
+    GOOD:        { label: '✅ Works',   color: 0x256900, hex: '#256900', bg: 0x95f169 },
+    MAINTENANCE: { label: '🔧 Fixing', color: 0x8f4816, hex: '#8f4816', bg: 0xffc5a5 },
+    BROKEN:      { label: '💀 Broken', color: 0xb02500, hex: '#b02500', bg: 0xf95630 }
 };
 
 function getProjectStatus(id) {

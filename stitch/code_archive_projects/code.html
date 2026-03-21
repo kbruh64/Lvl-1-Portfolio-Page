@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Work+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#4aedef",
+              "surface-container-high": "#e3e2e2",
+              "primary": "#256900",
+              "error-container": "#f95630",
+              "on-tertiary-fixed": "#00494a",
+              "secondary-container": "#ffc5a5",
+              "surface-container-highest": "#dddddd",
+              "on-background": "#2e2f2f",
+              "surface-container-lowest": "#ffffff",
+              "secondary-dim": "#803d0a",
+              "surface-bright": "#f8f6f6",
+              "on-error-container": "#520c00",
+              "surface": "#f8f6f6",
+              "surface-tint": "#256900",
+              "on-secondary-fixed": "#582500",
+              "on-surface": "#2e2f2f",
+              "on-error": "#ffefec",
+              "outline-variant": "#adadad",
+              "tertiary-container": "#5dfbfe",
+              "error-dim": "#b92902",
+              "primary-fixed": "#95f169",
+              "inverse-on-surface": "#9d9d9d",
+              "surface-dim": "#d4d4d4",
+              "primary-container": "#95f169",
+              "secondary": "#8f4816",
+              "inverse-primary": "#95f169",
+              "secondary-fixed-dim": "#ffb285",
+              "surface-variant": "#dddddd",
+              "tertiary-dim": "#00595b",
+              "outline": "#777777",
+              "tertiary-fixed": "#5dfbfe",
+              "secondary-fixed": "#ffc5a5",
+              "on-surface-variant": "#5b5b5c",
+              "on-primary-fixed-variant": "#226300",
+              "on-primary-container": "#1e5800",
+              "inverse-surface": "#0d0e0f",
+              "surface-container-low": "#f2f0f0",
+              "error": "#b02500",
+              "background": "#f8f6f6",
+              "on-tertiary": "#befeff",
+              "on-secondary-fixed-variant": "#813e0b",
+              "on-tertiary-fixed-variant": "#00686a",
+              "primary-dim": "#1f5c00",
+              "tertiary": "#006668",
+              "on-primary-fixed": "#154300",
+              "surface-container": "#e9e8e8",
+              "primary-fixed-dim": "#87e25d",
+              "on-secondary-container": "#763502",
+              "on-tertiary-container": "#005d5f",
+              "on-primary": "#d5ffbb",
+              "on-secondary": "#fff0e9"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "0px"},
+          },
+        },
+      }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.sandstone-texture {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuDhFHcJopNOmSBlxBvJY_ydZSRRaBS53n_qxEyUAzOpvI_Dn2icNDBmVg4vc8k3OPiLcBftYGV1S2PxofJGZ8xiBe5YtNvE4TVgsikblvufhYDuCR4Np3xbtpsfZyUSMbto5An6GgYSioo85xzrYrGJRvsOcWnoES-N7E8U96NluSUQbRg97wMVaSpwqLd33puc_FL6gwQYen7kY4oTb5XP2bhzFSFNK5TSHmG5iAQz3FQT3fiwIb_P7qGQwOIVLtYYEEeunjUh6XA)
+    }
+.hard-shadow {
+    box-shadow: 8px 8px 0 0 rgba(0, 0, 0, 0.1)
+    }
+.inset-carve {
+    box-shadow: inset 4px 4px 0 0 rgba(0, 0, 0, 0.2)
+    }</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-secondary-fixed sandstone-texture font-body text-on-surface selection:bg-tertiary-fixed selection:text-on-tertiary-fixed">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 bg-stone-200/80 dark:bg-stone-900/80 backdrop-blur-md border-b-4 border-stone-400 dark:border-stone-800 flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-secondary border-2 border-on-secondary-fixed flex items-center justify-center">
+<img alt="Steve Avatar" class="w-10 h-10" data-alt="Stylized blocky avatar character named Steve" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBf2KtO7yEXA5X0WIxChaZ8JDIKMSVp27d4rgFns1ezPyCWck4ZCXzCoGO4dMkRtPY0FfoA1VI0o_IS0DydH-gTYBeBHs_cxyHPe05JPliB2YpzUqGsG-tgin8FvFMzJCXDWuQ7IUnKxerX72_LEpnVV7kzLzWUL38GOsePL0cwJ6W4WzgRwbuDQ7jc9sjoPp4Tx6hazRtg73n2zxKmy9zmrCOEwU_yVwwK9npVcO7xUOjeLZAzykrQLeKy9_FYeocCul7Tc1xi22Y"/>
+</div>
+<h1 class="text-2xl font-bold text-lime-900 dark:text-lime-100 font-headline uppercase tracking-wider">The Digital Architect</h1>
+</div>
+<nav class="hidden md:flex gap-8">
+<a class="text-lime-600 border-b-4 border-lime-600 pb-1 font-headline uppercase tracking-wider" href="#">Source</a>
+<a class="text-stone-500 hover:text-stone-800 dark:text-stone-400 font-headline uppercase tracking-wider transition-colors" href="#">Terminal</a>
+<a class="text-stone-500 hover:text-stone-800 dark:text-stone-400 font-headline uppercase tracking-wider transition-colors" href="#">Manifesto</a>
+</nav>
+<div class="p-2 hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors cursor-pointer active:translate-y-1">
+<span class="material-symbols-outlined text-lime-700 dark:text-lime-400">code</span>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-16 space-y-24">
+<!-- Hero Biome Section -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
+<div class="md:col-span-7 space-y-6">
+<span class="inline-block px-4 py-1 bg-secondary text-on-secondary font-headline font-bold uppercase tracking-tighter">Biome: Badlands</span>
+<h2 class="text-6xl md:text-8xl font-headline font-bold text-on-secondary-container leading-none">CODE<br/>ARCHIVE</h2>
+<p class="text-xl text-on-secondary-fixed-variant max-w-xl leading-relaxed">
+                    Excavating digital relics from the shifting sands. Each entry is a hardened "Library" designed to enhance the foundational architecture of the web.
+                </p>
+</div>
+<div class="md:col-span-5 flex justify-end">
+<div class="w-64 h-64 bg-secondary-container border-8 border-secondary relative hard-shadow">
+<div class="absolute -top-12 -right-8 w-24 h-48 bg-primary border-4 border-primary-dim">
+<div class="absolute top-4 left-4 w-4 h-4 bg-primary-fixed"></div>
+<div class="absolute bottom-12 right-4 w-4 h-4 bg-primary-fixed"></div>
+</div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-8xl text-secondary opacity-20">terminal</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Repository Gallery (Asymmetric Layout) -->
+<section class="space-y-12">
+<div class="flex items-center gap-4">
+<span class="h-1 w-12 bg-secondary"></span>
+<h3 class="font-headline text-2xl font-bold uppercase tracking-widest text-secondary">Active Modules</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+<!-- Code Card 1 -->
+<div class="group relative bg-surface-container-low border-b-8 border-r-8 border-secondary-dim p-1 transition-transform hover:-translate-y-2">
+<div class="bg-surface p-6 h-full border-2 border-secondary-dim/20 space-y-6">
+<div class="aspect-video bg-secondary-container overflow-hidden border-4 border-secondary/30">
+<img alt="Sandstone UI" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all" data-alt="Aerial view of desert dunes with architectural shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCo67WNf371CK00T2Qyo0K320n_iqCZp3Ys2ZI8K2-IuYbkFd6m9cyMWmrNpJRVTBHG0VKRivlUJMNS9ojc4FidXgBo2FiuvMeVNdrfMFNTVHD6xRAnsMRKk3iIG8WZ4M9CnmT73_645JLXcdqDyKZDJgn8szwha3d1MUE6MM1ssxFUHzWR7GpPctsoNvJXIk1QdMr3LxwJlatP3f3ZPMvE2-lVJVkOJpAkuqZnQX6nwW1mENPTmvzhssq8INEIT52yl87HKgYm3rg"/>
+</div>
+<div class="space-y-2">
+<h4 class="font-headline text-2xl font-extrabold text-on-surface">REDSTONE_ENGINE v2</h4>
+<p class="text-on-surface-variant text-sm">A foundational library for reactive logic flows, optimized for low-latency visual updates across distributed biomes.</p>
+</div>
+<div class="flex justify-between items-center pt-4">
+<span class="font-headline font-bold text-xs uppercase text-secondary">Type: Core Engine</span>
+<button class="bg-primary text-on-primary px-4 py-2 font-headline font-bold uppercase border-t-2 border-primary-fixed border-b-2 border-primary-dim active:border-t-primary-dim active:border-b-primary-fixed transition-all hover:brightness-110 text-xs">View Source</button>
+</div>
+</div>
+</div>
+<!-- Code Card 2 -->
+<div class="group relative bg-surface-container-low border-b-8 border-r-8 border-secondary-dim p-1 transition-transform hover:-translate-y-2 lg:mt-12">
+<div class="bg-surface p-6 h-full border-2 border-secondary-dim/20 space-y-6">
+<div class="aspect-video bg-tertiary-container overflow-hidden border-4 border-tertiary/30">
+<img alt="Cactus Pattern" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all" data-alt="Close up of cactus thorns and textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWPFi2Z6TeL1wzWghUEbB0HB64vxWtVxvkz0o6Z5H75fNBlJeSDGtGD-jk55qVvx0g_zyYS7Zj1kwqy0RbFmrzBy0vY_L1KoWymKVeVYCVLIRKrWx_KpTWZUADKZQkMQBvSNFqrny-CaOrPME7z6WMsvfIDpquysluqZSKK4bDEv_nOtQAURV1obLWlrT0gRNEpceUAuoRKN4lUK4xl1aiIL3gnHFWqifO5ae6oLBN_LYv0QCslhsHX-1XwEmQ5Rs-20SlPV9UPWM"/>
+</div>
+<div class="space-y-2">
+<h4 class="font-headline text-2xl font-extrabold text-on-surface">PIXEL_RENDERER</h4>
+<p class="text-on-surface-variant text-sm">A post-processing suite that adds organic texture and sharp definition to flat geometric interfaces.</p>
+</div>
+<div class="flex justify-between items-center pt-4">
+<span class="font-headline font-bold text-xs uppercase text-secondary">Type: Visual FX</span>
+<button class="bg-primary text-on-primary px-4 py-2 font-headline font-bold uppercase border-t-2 border-primary-fixed border-b-2 border-primary-dim active:border-t-primary-dim active:border-b-primary-fixed transition-all hover:brightness-110 text-xs">Clone</button>
+</div>
+</div>
+</div>
+<!-- Code Card 3 -->
+<div class="group relative bg-surface-container-low border-b-8 border-r-8 border-secondary-dim p-1 transition-transform hover:-translate-y-2">
+<div class="bg-surface p-6 h-full border-2 border-secondary-dim/20 space-y-6">
+<div class="aspect-video bg-secondary-container overflow-hidden border-4 border-secondary/30">
+<img alt="Night Desert" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all" data-alt="Vibrant desert night sky with glowing blue accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5FgYqoMBUZTvgHwMV49IjHTwLDHuiDz65rfxSifn7eX-0Rx9Q-gXD6qSRflR8GpO-7yskV3BID3_3hbTK9gh58iM5YxZvepRBAltn9YHbmBycQ1h0DxiKZyFFtTXcc5O8kK4gPL0-GiefASQH8IIBQCznwQGnYcv3nWHRQjxLYddnAB36IcyBqUXiiJk8-Ghc4bbExWcnyfZt622Tgi58RNkHO3eW_e4njcq56ZPQi4UC2LPcAqXk6WB55z2EqijD8x5VJWwMX_U"/>
+</div>
+<div class="space-y-2">
+<h4 class="font-headline text-2xl font-extrabold text-on-surface">OASIS_LAYOUT</h4>
+<p class="text-on-surface-variant text-sm">A layout system designed for high-density information display that maintains visual breathing room.</p>
+</div>
+<div class="flex justify-between items-center pt-4">
+<span class="font-headline font-bold text-xs uppercase text-secondary">Type: UI Layout</span>
+<button class="bg-primary text-on-primary px-4 py-2 font-headline font-bold uppercase border-t-2 border-primary-fixed border-b-2 border-primary-dim active:border-t-primary-dim active:border-b-primary-fixed transition-all hover:brightness-110 text-xs">View Source</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Build Artifacts Section (Deliverables) -->
+<section class="bg-on-secondary-fixed text-on-secondary p-12 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-64 h-64 bg-secondary-dim opacity-20 -rotate-12 translate-x-24 -translate-y-24"></div>
+<div class="relative z-10 flex flex-col md:flex-row gap-12 items-center">
+<div class="flex-shrink-0">
+<div class="w-48 h-48 bg-secondary border-t-8 border-secondary-container border-b-8 border-secondary-dim inset-carve flex flex-col items-center justify-center gap-2">
+<span class="material-symbols-outlined text-6xl text-secondary-container">package_2</span>
+<span class="font-headline font-bold text-xs tracking-widest text-secondary-container">BUILD ARTIFACTS</span>
+</div>
+</div>
+<div class="flex-grow space-y-8">
+<div class="space-y-2">
+<h3 class="font-headline text-4xl font-extrabold text-secondary-fixed uppercase">Deployment Package</h3>
+<p class="text-secondary-fixed-dim/80 max-w-2xl">Acquire the distribution bundles, environment variables, and compiled binaries for the Desert Biome suite.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-secondary-dim p-4 border-2 border-secondary/50 flex flex-col gap-2 hover:bg-secondary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-tertiary-fixed">token</span>
+<span class="font-label text-xs font-bold uppercase">Tokens.json</span>
+</div>
+<div class="bg-secondary-dim p-4 border-2 border-secondary/50 flex flex-col gap-2 hover:bg-secondary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-tertiary-fixed">inventory</span>
+<span class="font-label text-xs font-bold uppercase">Dist.tar.gz</span>
+</div>
+<div class="bg-secondary-dim p-4 border-2 border-secondary/50 flex flex-col gap-2 hover:bg-secondary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-tertiary-fixed">terminal</span>
+<span class="font-label text-xs font-bold uppercase">Build.log</span>
+</div>
+<div class="bg-secondary-dim p-4 border-2 border-secondary/50 flex flex-col gap-2 hover:bg-secondary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-tertiary-fixed">code_blocks</span>
+<span class="font-label text-xs font-bold uppercase">Source_Code</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t-[12px] border-lime-600 dark:border-stone-800 bg-lime-900 dark:bg-stone-950 text-lime-100 py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="space-y-2 text-center md:text-left">
+<p class="font-['Space_Grotesk'] font-bold text-lime-400 text-xl tracking-tight">The Digital Architect</p>
+<p class="font-['Work_Sans'] text-sm leading-relaxed opacity-70">© 2024 Voxel-Chic Portfolio. Built block by block.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform font-['Work_Sans'] text-sm uppercase font-bold tracking-widest" href="#">The Nether</a>
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform font-['Work_Sans'] text-sm uppercase font-bold tracking-widest" href="#">The End</a>
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform font-['Work_Sans'] text-sm uppercase font-bold tracking-widest" href="#">Support</a>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 bg-lime-800 border-2 border-lime-600 flex items-center justify-center hover:bg-lime-700 cursor-pointer">
+<span class="material-symbols-outlined text-lime-400 text-lg">mail</span>
+</div>
+<div class="w-10 h-10 bg-lime-800 border-2 border-lime-600 flex items-center justify-center hover:bg-lime-700 cursor-pointer">
+<span class="material-symbols-outlined text-lime-400 text-lg">terminal</span>
+</div>
+</div>
+</footer>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-1 bg-stone-800/90 dark:bg-black/90 border-4 border-stone-600 px-2 py-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)] md:hidden">
+<div class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95 transition-all">
+<span class="material-symbols-outlined">database</span>
+</div>
+<div class="bg-stone-600 ring-2 ring-white p-2 scale-110 text-lime-400">
+<span class="material-symbols-outlined">terminal</span>
+</div>
+<div class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95 transition-all">
+<span class="material-symbols-outlined">settings_ethernet</span>
+</div>
+<div class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95 transition-all">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<div class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95 transition-all">
+<span class="material-symbols-outlined">person</span>
+</div>
+</nav>
+</body></html>

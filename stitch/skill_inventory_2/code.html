@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Skill Inventory | The Digital Architect</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#4aedef",
+              "surface-container-high": "#e3e2e2",
+              "primary": "#256900",
+              "error-container": "#f95630",
+              "on-tertiary-fixed": "#00494a",
+              "secondary-container": "#ffc5a5",
+              "surface-container-highest": "#dddddd",
+              "on-background": "#2e2f2f",
+              "surface-container-lowest": "#ffffff",
+              "secondary-dim": "#803d0a",
+              "surface-bright": "#f8f6f6",
+              "on-error-container": "#520c00",
+              "surface": "#f8f6f6",
+              "surface-tint": "#256900",
+              "on-secondary-fixed": "#582500",
+              "on-surface": "#2e2f2f",
+              "on-error": "#ffefec",
+              "outline-variant": "#adadad",
+              "tertiary-container": "#5dfbfe",
+              "error-dim": "#b92902",
+              "primary-fixed": "#95f169",
+              "inverse-on-surface": "#9d9d9d",
+              "surface-dim": "#d4d4d4",
+              "primary-container": "#95f169",
+              "secondary": "#8f4816",
+              "inverse-primary": "#95f169",
+              "secondary-fixed-dim": "#ffb285",
+              "surface-variant": "#dddddd",
+              "tertiary-dim": "#00595b",
+              "outline": "#777777",
+              "tertiary-fixed": "#5dfbfe",
+              "secondary-fixed": "#ffc5a5",
+              "on-surface-variant": "#5b5b5c",
+              "on-primary-fixed-variant": "#226300",
+              "on-primary-container": "#1e5800",
+              "inverse-surface": "#0d0e0f",
+              "surface-container-low": "#f2f0f0",
+              "error": "#b02500",
+              "background": "#f8f6f6",
+              "on-tertiary": "#befeff",
+              "on-secondary-fixed-variant": "#813e0b",
+              "on-tertiary-fixed-variant": "#00686a",
+              "primary-dim": "#1f5c00",
+              "tertiary": "#006668",
+              "on-primary-fixed": "#154300",
+              "surface-container": "#e9e8e8",
+              "primary-fixed-dim": "#87e25d",
+              "on-secondary-container": "#763502",
+              "on-tertiary-container": "#005d5f",
+              "on-primary": "#d5ffbb",
+              "on-secondary": "#fff0e9"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Work Sans"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "0px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .voxel-grid-bg {
+            background-image: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .hard-shadow-recessed {
+            box-shadow: inset 4px 4px 0px 0px rgba(0,0,0,0.2), inset -4px -4px 0px 0px rgba(255,255,255,0.1);
+        }
+        .hard-shadow-raised {
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.3);
+        }
+        .item-slot:hover .tooltip {
+            display: block;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<header class="fixed top-0 z-50 w-full flex justify-between items-center px-6 py-4 bg-stone-200/80 dark:bg-stone-900/80 backdrop-blur-md border-b-4 border-stone-400 dark:border-stone-800">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-stone-400 border-2 border-stone-600 flex items-center justify-center overflow-hidden"><span class="material-symbols-outlined text-stone-600">account_circle</span></div>
+<h1 class="text-2xl font-bold text-lime-900 dark:text-lime-100 font-headline uppercase tracking-wider">The Digital Architect</h1>
+</div>
+<nav class="hidden md:flex gap-8">
+<a class="font-headline uppercase tracking-wider text-lime-600 border-b-4 border-lime-600 pb-1" href="#">Inventory</a>
+<a class="font-headline uppercase tracking-wider text-stone-500 hover:text-stone-800 dark:text-stone-400 transition-colors" href="#">Overworld</a>
+<a class="font-headline uppercase tracking-wider text-stone-500 hover:text-stone-800 dark:text-stone-400 transition-colors" href="#">Crafting</a>
+</nav>
+<button class="p-2 text-lime-700 dark:text-lime-400 hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors active:translate-y-1">
+<span class="material-symbols-outlined">inventory</span>
+</button>
+</header>
+<main class="min-h-screen pt-24 pb-32 px-4 md:px-8 voxel-grid-bg bg-surface">
+<div class="max-w-6xl mx-auto">
+<!-- Page Header -->
+<div class="mb-12 flex flex-col md:flex-row items-end justify-between gap-6 border-l-[12px] border-primary pl-8 py-4 bg-surface-container-low">
+<div class="space-y-2">
+<p class="font-headline text-secondary font-bold uppercase tracking-widest text-sm">Experience Points: 2024</p>
+<h2 class="text-5xl md:text-7xl font-headline font-bold text-on-surface leading-none">SKILL<br/><span class="text-primary">INVENTORY</span></h2>
+</div>
+<div class="flex gap-4">
+<div class="p-4 bg-tertiary-container border-b-4 border-tertiary text-on-tertiary-container">
+<span class="block text-xs uppercase font-bold opacity-70">Main Class</span>
+<span class="text-xl font-headline font-bold">Fullstack Alchemist</span>
+</div>
+</div>
+</div>
+<!-- Creative Mode Inventory Layout -->
+<div class="bg-stone-300 border-4 border-stone-500 p-1 md:p-8 max-w-4xl mx-auto shadow-[12px_12px_0px_0px_rgba(0,0,0,0.15)]">
+<!-- Search & Tabs -->
+<div class="flex gap-1 mb-1">
+<div class="bg-stone-300 border-x-4 border-t-4 border-stone-500 px-4 py-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-stone-600">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-stone-800 placeholder-stone-500 font-headline uppercase text-sm w-32 md:w-64" placeholder="Search Items..." type="text"/>
+</div>
+<div class="bg-stone-400 border-x-4 border-t-4 border-stone-600 px-4 py-2 opacity-60">
+<span class="material-symbols-outlined text-stone-700">construction</span>
+</div>
+<div class="bg-stone-400 border-x-4 border-t-4 border-stone-600 px-4 py-2 opacity-60">
+<span class="material-symbols-outlined text-stone-700">eco</span>
+</div>
+</div>
+<!-- The Main Grid -->
+<div class="bg-stone-400 border-4 border-stone-600 p-4 md:p-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-9 gap-2 md:gap-3">
+<!-- Skill Slot 1: React -->
+<div class="relative group item-slot">
+<div class="w-full aspect-square bg-stone-300 border-4 border-stone-500 flex items-center justify-center cursor-pointer hover:bg-stone-200 transition-colors hard-shadow-recessed active:translate-y-0.5">
+<span class="material-symbols-outlined text-3xl text-blue-600" data-weight="fill">deployed_code</span>
+</div>
+<!-- Tooltip -->
+<div class="tooltip hidden absolute z-50 top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-stone-800 text-stone-100 p-3 border-2 border-stone-400 shadow-2xl pointer-events-none">
+<p class="font-headline font-bold text-tertiary-fixed">React.js</p>
+<p class="text-xs text-stone-400 italic mb-2">Mythic Framework</p>
+<p class="text-sm font-body">Efficiency V</p>
+<p class="text-sm font-body">Unbreaking III</p>
+<p class="text-[10px] mt-2 text-lime-400 uppercase tracking-tighter">Level: 94/100</p>
+</div>
+</div>
+<!-- Skill Slot 2: Python -->
+<div class="relative group item-slot">
+<div class="w-full aspect-square bg-stone-300 border-4 border-stone-500 flex items-center justify-center cursor-pointer hover:bg-stone-200 hard-shadow-recessed">
+<span class="material-symbols-outlined text-3xl text-yellow-600">terminal</span>
+</div>
+<div class="tooltip hidden absolute z-50 top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-stone-800 text-stone-100 p-3 border-2 border-stone-400 shadow-2xl">
+<p class="font-headline font-bold text-tertiary-fixed">Python</p>
+<p class="text-xs text-stone-400 italic mb-2">High-Level Serpent</p>
+<p class="text-sm font-body">Sharpness IV</p>
+<p class="text-[10px] mt-2 text-lime-400 uppercase tracking-tighter">Level: 82/100</p>
+</div>
+</div>
+<!-- Skill Slot 3: UI Design -->
+<div class="relative group item-slot">
+<div class="w-full aspect-square bg-stone-300 border-4 border-stone-500 flex items-center justify-center cursor-pointer hover:bg-stone-200 hard-shadow-recessed">
+<span class="material-symbols-outlined text-3xl text-purple-600">palette</span>
+</div>
+<div class="tooltip hidden absolute z-50 top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-stone-800 text-stone-100 p-3 border-2 border-stone-400 shadow-2xl">
+<p class="font-headline font-bold text-tertiary-fixed">UI Design</p>
+<p class="text-xs text-stone-400 italic mb-2">Voxel Artist</p>
+<p class="text-sm font-body">Fortune III</p>
+<p class="text-[10px] mt-2 text-lime-400 uppercase tracking-tighter">Level: 88/100</p>
+</div>
+</div>
+<!-- Skill Slot 4: TypeScript -->
+<div class="relative group item-slot">
+<div class="w-full aspect-square bg-stone-300 border-4 border-stone-500 flex items-center justify-center cursor-pointer hover:bg-stone-200 hard-shadow-recessed">
+<span class="material-symbols-outlined text-3xl text-blue-700">shield</span>
+</div>
+<div class="tooltip hidden absolute z-50 top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-stone-800 text-stone-100 p-3 border-2 border-stone-400 shadow-2xl">
+<p class="font-headline font-bold text-tertiary-fixed">TypeScript</p>
+<p class="text-xs text-stone-400 italic mb-2">Type-Safe Armor</p>
+<p class="text-sm font-body">Protection IV</p>
+<p class="text-[10px] mt-2 text-lime-400 uppercase tracking-tighter">Level: 79/100</p>
+</div>
+</div>
+<!-- Empty Slots -->
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<!-- Repeat Rows for visual density -->
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+<div class="w-full aspect-square bg-stone-400 border-4 border-stone-500/50 hard-shadow-recessed opacity-20"></div>
+</div>
+<!-- Hotbar Label -->
+<div class="mt-8 mb-2 px-2 flex justify-between items-center">
+<span class="font-headline uppercase text-sm font-bold text-stone-600 tracking-widest">Active Skills Hotbar</span>
+<span class="material-symbols-outlined text-stone-500 text-lg">expand_more</span>
+</div>
+<!-- Hotbar (8 Slots) -->
+<div class="bg-stone-500 p-2 md:p-3 grid grid-cols-8 gap-1 md:gap-2">
+<!-- Hotbar 1: Active React -->
+<div class="aspect-square bg-stone-300 border-4 border-stone-100 flex items-center justify-center ring-4 ring-white shadow-xl scale-105 active:scale-100 transition-transform">
+<span class="material-symbols-outlined text-blue-600">deployed_code</span>
+</div>
+<!-- Hotbar 2: Active UI -->
+<div class="aspect-square bg-stone-300 border-4 border-stone-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-purple-600">palette</span>
+</div>
+<!-- Hotbar 3: Active Python -->
+<div class="aspect-square bg-stone-300 border-4 border-stone-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-yellow-600">terminal</span>
+</div>
+<!-- Hotbar 4: Active TypeScript -->
+<div class="aspect-square bg-stone-300 border-4 border-stone-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-blue-700">shield</span>
+</div>
+<!-- Empty Hotbar Slots -->
+<div class="aspect-square bg-stone-400/50 border-4 border-stone-600/50"></div>
+<div class="aspect-square bg-stone-400/50 border-4 border-stone-600/50"></div>
+<div class="aspect-square bg-stone-400/50 border-4 border-stone-600/50"></div>
+<div class="aspect-square bg-stone-400/50 border-4 border-stone-600/50"></div>
+</div>
+</div>
+<!-- Bento Stats Grid -->
+<div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 p-8 bg-surface-container-high border-b-8 border-secondary flex flex-col justify-between min-h-[300px]">
+<h3 class="font-headline text-3xl font-bold uppercase">Attribute: Creativity</h3>
+<div class="w-full bg-stone-400 h-8 mt-4 border-2 border-stone-600 p-1">
+<div class="bg-primary h-full w-[75%] border-r-4 border-primary-dim"></div>
+</div>
+<p class="mt-6 text-on-surface-variant leading-relaxed max-w-lg">
+                        Specializing in modern architectural UI, leveraging the "Voxelism" technique to create structured yet organic digital biomes. Current proficiency indicates a high affinity for green-tier frameworks.
+                    </p>
+</div>
+<div class="p-8 bg-stone-900 text-stone-100 border-b-8 border-tertiary flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-6xl text-tertiary-fixed mb-4" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h3 class="font-headline text-2xl font-bold uppercase">Enchanted</h3>
+<p class="text-stone-400 text-sm mt-2">Currently applying "Performance Polish" to active projects.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-1 bg-stone-800/90 border-4 border-stone-600 px-2 py-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)]">
+<div class="p-2 text-stone-400"><span class="material-symbols-outlined">home_storage</span></div>
+<div class="p-2 text-stone-400"><span class="material-symbols-outlined">explore</span></div>
+<div class="bg-stone-600 ring-2 ring-white p-2 scale-110 text-lime-400"><span class="material-symbols-outlined">build</span></div>
+<div class="p-2 text-stone-400"><span class="material-symbols-outlined">auto_awesome</span></div>
+<div class="p-2 text-stone-400"><span class="material-symbols-outlined">person</span></div>
+</nav>
+<!-- Footer -->
+<footer class="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-8 bg-lime-900 border-t-[12px] border-lime-600 font-body text-sm leading-relaxed text-lime-100">
+<div class="text-center md:text-left">
+<p class="font-headline font-bold text-lime-400 text-lg mb-2">Voxel-Chic Portfolio</p>
+<p>© 2024 Voxel-Chic Portfolio. Built block by block.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">Overworld</a>
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">The Nether</a>
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">The End</a>
+</div>
+<div class="flex gap-4">
+<div class="w-8 h-8 bg-lime-800 border-2 border-lime-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">terminal</span>
+</div>
+<div class="w-8 h-8 bg-lime-800 border-2 border-lime-600 flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">code</span>
+</div>
+</div>
+</footer>
+</body></html>

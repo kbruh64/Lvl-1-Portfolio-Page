@@ -3,7 +3,8 @@
     "allow": [
       "WebFetch(domain:how-to-make-a-nutella-sandwich.vercel.app)",
       "WebFetch(domain:2d-minecraft-kpjmo0bpt-felix-aos-projects.vercel.app)",
-      "WebFetch(domain:value-scanner-e0p8dxaxt-felix-aos-projects.vercel.app)"
+      "WebFetch(domain:value-scanner-e0p8dxaxt-felix-aos-projects.vercel.app)",
+      "Bash(grep -i \"stitch\\\\|stich\" \"c:/Users/felix/OneDrive/Documents/GitHub/Lvl 1 Portfolio Page\"/js/*.js \"c:/Users/felix/OneDrive/Documents/GitHub/Lvl 1 Portfolio Page\"/js/scenes/*.js)"
     ]
   }
 }

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nether Portal Contact | The Digital Architect</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Work+Sans:ital,wght@0,300;0,400;0,600;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed-dim": "#4aedef",
+                        "surface-container-high": "#e3e2e2",
+                        "primary": "#256900",
+                        "error-container": "#f95630",
+                        "on-tertiary-fixed": "#00494a",
+                        "secondary-container": "#ffc5a5",
+                        "surface-container-highest": "#dddddd",
+                        "on-background": "#2e2f2f",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-dim": "#803d0a",
+                        "surface-bright": "#f8f6f6",
+                        "on-error-container": "#520c00",
+                        "surface": "#f8f6f6",
+                        "surface-tint": "#256900",
+                        "on-secondary-fixed": "#582500",
+                        "on-surface": "#2e2f2f",
+                        "on-error": "#ffefec",
+                        "outline-variant": "#adadad",
+                        "tertiary-container": "#5dfbfe",
+                        "error-dim": "#b92902",
+                        "primary-fixed": "#95f169",
+                        "inverse-on-surface": "#9d9d9d",
+                        "surface-dim": "#d4d4d4",
+                        "primary-container": "#95f169",
+                        "secondary": "#8f4816",
+                        "inverse-primary": "#95f169",
+                        "secondary-fixed-dim": "#ffb285",
+                        "surface-variant": "#dddddd",
+                        "tertiary-dim": "#00595b",
+                        "outline": "#777777",
+                        "tertiary-fixed": "#5dfbfe",
+                        "secondary-fixed": "#ffc5a5",
+                        "on-surface-variant": "#5b5b5c",
+                        "on-primary-fixed-variant": "#226300",
+                        "on-primary-container": "#1e5800",
+                        "inverse-surface": "#0d0e0f",
+                        "surface-container-low": "#f2f0f0",
+                        "error": "#b02500",
+                        "background": "#f8f6f6",
+                        "on-tertiary": "#befeff",
+                        "on-secondary-fixed-variant": "#813e0b",
+                        "on-tertiary-fixed-variant": "#00686a",
+                        "primary-dim": "#1f5c00",
+                        "tertiary": "#006668",
+                        "on-primary-fixed": "#154300",
+                        "surface-container": "#e9e8e8",
+                        "primary-fixed-dim": "#87e25d",
+                        "on-secondary-container": "#763502",
+                        "on-tertiary-container": "#005d5f",
+                        "on-primary": "#d5ffbb",
+                        "on-secondary": "#fff0e9"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Work Sans"],
+                        "label": ["Work Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "0px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .voxel-grid {
+            background-image: radial-gradient(circle at 2px 2px, rgba(0,0,0,0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .nether-portal-glow {
+            background: radial-gradient(circle, #5b0063 0%, #1e0021 100%);
+            box-shadow: inset 0 0 100px #a800b5;
+        }
+        .obsidian-border {
+            border: 12px solid #1a0a24;
+            box-shadow: 8px 8px 0px 0px #0d0412;
+        }
+        .book-quill-page {
+            background-color: #f4e4bc;
+            background-image: linear-gradient(#e1d1a8 1px, transparent 1px);
+            background-size: 100% 2rem;
+            line-height: 2rem;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface voxel-grid min-h-screen selection:bg-tertiary-fixed selection:text-on-tertiary-fixed">
+<!-- TopAppBar -->
+<header class="bg-stone-200/80 dark:bg-stone-900/80 backdrop-blur-md text-lime-700 dark:text-lime-400 font-['Space_Grotesk'] uppercase tracking-wider docked full-width top-0 border-b-4 border-stone-400 dark:border-stone-800 flex justify-between items-center w-full px-6 py-4 z-50 fixed">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-stone-300 flex items-center justify-center border-2 border-stone-400">
+<span class="material-symbols-outlined text-stone-600">person</span>
+</div>
+<span class="text-2xl font-bold text-lime-900 dark:text-lime-100 style_brand_logo">The Digital Architect</span>
+</div>
+<nav class="hidden md:flex gap-8 items-center font-medium">
+<a class="text-stone-500 hover:text-stone-800 dark:text-stone-400 hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors active:translate-y-1" href="#">Inventory</a>
+<a class="text-stone-500 hover:text-stone-800 dark:text-stone-400 hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors active:translate-y-1" href="#">Biomes</a>
+<a class="text-lime-600 border-b-4 border-lime-600 pb-1 active:translate-y-1" href="#">Portal</a>
+</nav>
+<button class="p-2 hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors active:translate-y-1">
+<span class="material-symbols-outlined">inventory</span>
+</button>
+</header>
+<main class="pt-32 pb-24 px-6 max-w-7xl mx-auto flex flex-col md:grid md:grid-cols-12 gap-12">
+<!-- Hero / Context Section -->
+<section class="md:col-span-5 flex flex-col justify-center gap-8">
+<h1 class="font-headline font-bold text-6xl md:text-8xl leading-none text-on-surface tracking-tighter">
+                LEAVE THE <br/><span class="text-error">OVERWORLD</span>
+</h1>
+<p class="text-xl text-on-surface-variant leading-relaxed max-w-md">
+                Your message is a spark. Sign the ledger, strike the obsidian, and let your words travel through the dimensional rift.
+            </p>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container p-6 border-b-4 border-outline-variant">
+<span class="font-headline text-2xl block mb-2 text-primary">Coordinates</span>
+<p class="font-mono text-sm uppercase">X: 142 // Y: 64 // Z: -802</p>
+</div>
+<div class="bg-surface-container p-6 border-b-4 border-outline-variant">
+<span class="font-headline text-2xl block mb-2 text-secondary">Material</span>
+<p class="font-mono text-sm uppercase">Crying Obsidian</p>
+</div>
+</div>
+</section>
+<!-- The Nether Portal Contact Form -->
+<section class="md:col-span-7 relative">
+<div class="nether-portal-glow obsidian-border p-8 md:p-12 relative overflow-hidden">
+<!-- Portal Particle Effect simulation via CSS blocks -->
+<div class="absolute inset-0 opacity-20 pointer-events-none">
+<div class="absolute top-10 left-10 w-4 h-4 bg-tertiary-fixed-dim"></div>
+<div class="absolute bottom-20 right-20 w-8 h-8 bg-tertiary-fixed"></div>
+<div class="absolute top-1/2 left-1/4 w-2 h-2 bg-white"></div>
+</div>
+<!-- Book and Quill Styled Form -->
+<div class="book-quill-page p-8 shadow-2xl relative z-10">
+<div class="flex justify-between items-start mb-8">
+<h2 class="font-headline text-3xl text-secondary-dim border-b-2 border-secondary-dim/20 pb-2">Signing Book...</h2>
+<span class="material-symbols-outlined text-secondary-dim text-4xl" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+</div>
+<form class="flex flex-col gap-6">
+<div class="space-y-1">
+<label class="font-headline text-xs uppercase tracking-widest text-secondary-dim font-bold">Author Identity</label>
+<input class="w-full bg-transparent border-none focus:ring-0 text-xl font-body text-black placeholder:text-secondary-dim/30 p-0 border-b-2 border-secondary-dim/10 focus:border-secondary" placeholder="Enter traveler name..." type="text"/>
+</div>
+<div class="space-y-1">
+<label class="font-headline text-xs uppercase tracking-widest text-secondary-dim font-bold">Return Frequency</label>
+<input class="w-full bg-transparent border-none focus:ring-0 text-xl font-body text-black placeholder:text-secondary-dim/30 p-0 border-b-2 border-secondary-dim/10 focus:border-secondary" placeholder="example@overworld.com" type="email"/>
+</div>
+<div class="mt-4">
+<label class="font-headline text-xs uppercase tracking-widest text-secondary-dim font-bold">The Manifest</label>
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-lg font-body text-black placeholder:text-secondary-dim/30 p-0 leading-[2rem] resize-none" placeholder="Write your message here..." rows="6"></textarea>
+</div>
+<div class="mt-8 flex items-center justify-between gap-4">
+<div class="hidden sm:block text-secondary-dim/60 font-mono text-xs">Page 1 of 1</div>
+<button class="bg-error hover:bg-error-dim text-on-error font-headline font-bold text-xl px-10 py-4 border-t-4 border-red-400 border-b-4 border-red-950 transition-all active:translate-y-1 flex items-center gap-3" type="submit">
+<span class="material-symbols-outlined">local_fire_department</span>
+                                Ignite Portal
+                            </button>
+</div>
+</form>
+</div>
+</div>
+<!-- Side Visual: Loot Chest -->
+<div class="hidden lg:block absolute -right-16 top-1/2 -translate-y-1/2 w-32 h-32 bg-secondary border-4 border-secondary-dim shadow-xl">
+<div class="w-full h-4 bg-secondary-dim mt-8 flex justify-center">
+<div class="w-4 h-6 bg-secondary-fixed"></div>
+</div>
+<div class="absolute -top-4 -left-4 bg-tertiary-fixed text-on-tertiary-fixed p-2 font-mono text-xs font-bold">LOOT</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-1 bg-stone-800/90 dark:bg-black/90 border-4 border-stone-600 px-2 py-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)] style_shell_layout">
+<a class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95" href="#">
+<span class="material-symbols-outlined">home_storage</span>
+</a>
+<a class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95" href="#">
+<span class="material-symbols-outlined">explore</span>
+</a>
+<a class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95" href="#">
+<span class="material-symbols-outlined">build</span>
+</a>
+<a class="bg-stone-600 ring-2 ring-white p-2 scale-110 active:scale-95 text-lime-400" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+</a>
+<a class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95" href="#">
+<span class="material-symbols-outlined">person</span>
+</a>
+</nav>
+<!-- Footer -->
+<footer class="bg-lime-900 dark:bg-stone-950 text-lime-100 font-['Work_Sans'] text-sm leading-relaxed w-full border-t-[12px] border-lime-600 dark:border-stone-800 w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex flex-col gap-2">
+<span class="font-['Space_Grotesk'] font-bold text-lime-400 text-2xl uppercase">Voxel-Chic</span>
+<p>© 2024 Voxel-Chic Portfolio. Built block by block.</p>
+</div>
+<div class="flex gap-8">
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">Overworld</a>
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">The Nether</a>
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">The End</a>
+<a class="text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">Support</a>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 bg-lime-800 border-2 border-lime-700 flex items-center justify-center cursor-pointer hover:bg-lime-700">
+<span class="material-symbols-outlined text-lime-200">diamond</span>
+</div>
+<div class="w-10 h-10 bg-lime-800 border-2 border-lime-700 flex items-center justify-center cursor-pointer hover:bg-lime-700">
+<span class="material-symbols-outlined text-lime-200">shield</span>
+</div>
+</div>
+</footer>
+<!-- Imagery Data (Abstract representation of portal and book) -->
+<div class="hidden">
+<img data-alt="Purple swirl of energy with digital noise texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC732DeXcINzukiWz17qp1A37X3BsBrLOQ-WvftpmTbJy-dq2f8Fh8Eg7nIgT_1CUvf-u-JvXzLkWxKdVzG5jDzuD-fCcEvDRxdU5Ftha8gmIPKngHr2umKcUJ84AZxWQyM8wt0ZP58KvIliNuOzoKCbcsAL2mHoe1yWFu1-8sKwJlbGKg-ePjOAuQeT_C9YIT3ucuBgBOfPRu_i3Dl9rlE_SElbbP4jE9qOUL-gkQlDRds2MSGjOkSQlQuKv249KQIeyri2vNws2E"/>
+<img data-alt="An ancient book and a feather quill sitting on a wooden table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_ro302X92PZHTOFN4vTjLm9ch1UgfdK1vTFi__g6UZuI0cD9Hn4VRuaLBx-Pd2Bmyh6WDDRz0InF0Q59BTvfh3_TQ7oQ0XpyASkkeywP4ZHtvGRUcu9VNZyrQjP_uArfow5BBg8pBY_gEWIPju75Vm-ozDs34Jt1z9y7M6iY-WLKCr9fHvBnN7XZRQB3rU61-WHlH2cBfWmZqO02_UkoEK_U_g1CVORbXvz_QGMai3dF-JPA_xo0k2tKch13OVRmV5cLel4piUfQ"/>
+<img data-alt="Dark purple and black geometric obsidian stone pattern" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD630OXFFfQbC4clhe0tmjOE6LSAaPoU-lMfA0itgEVAbHsjxSPWDp1nRDpijJLGC0WGsgd-POuww5wOnVmkUzRDochHtdOoSTaMNJ03GfXYz9Ov2ObPWMzvlazQymAb5jRtJJDbMITPsinced9HNdx__bHrM74saUcAfiy-Gwo_NgR1v4S05oNtAiTvsqAyHjRlTaTFpq6-Ff5wBXhE_qRhaQGEQ1jHRXA7Wulx4oU3RfpJ1_28c-NdkQfYifLrvJRTH1ptgblbiw"/>
+</div>
+</body></html>

@@ -1,3 +1,18 @@
+const ADMIN_COL = {
+    bg:        0xfff8f0,
+    surface:   0xffffff,
+    container: 0xf2f0f0,
+    border:    0x8f4816,   // secondary (desert/earth)
+    onSurface: 0x2e2f2f,
+    variant:   0x5b5b5c,
+    primary:   0x256900,
+    secondary: 0x8f4816,
+    error:     0xb02500,
+};
+
+const A_HEAD = "'Space Grotesk', sans-serif";
+const A_BODY = "'Work Sans', sans-serif";
+
 class AdminScene extends Phaser.Scene {
     constructor() {
         super({ key: 'AdminScene' });
@@ -8,10 +23,8 @@ class AdminScene extends Phaser.Scene {
     create() {
         const W = this.scale.width;
         const H = this.scale.height;
-
         this.drawBg(W, H);
-        this.buildHeader(W, H);
-
+        this.buildHeader(W);
         if (isAdminLoggedIn()) {
             this.showPanel(W, H);
         } else {
@@ -20,69 +33,77 @@ class AdminScene extends Phaser.Scene {
     }
 
     drawBg(W, H) {
-        this.add.rectangle(0, 0, W, H, 0xfff8f0).setOrigin(0, 0);
         const g = this.add.graphics();
-        g.fillStyle(0xffcc99, 0.3);
-        for (let x = 30; x < W; x += 40)
-            for (let y = 30; y < H; y += 40)
-                g.fillCircle(x, y, 1.5);
+        g.fillStyle(ADMIN_COL.bg);
+        g.fillRect(0, 0, W, H);
+        // Voxel grid — from Stitch
+        g.fillStyle(0xffc5a5, 0.4);
+        for (let gx = 0; gx <= W; gx += 32)
+            for (let gy = 0; gy <= H; gy += 32)
+                g.fillCircle(gx, gy, 1);
     }
 
-    buildHeader(W, H) {
-        const hg = this.add.graphics();
-        hg.fillStyle(0xffffff);
-        hg.fillRect(0, 0, W, 72);
-        hg.lineStyle(2, 0xffddc0);
-        hg.lineBetween(0, 72, W, 72);
-        hg.fillStyle(0xff9900);
-        hg.fillRect(0, 69, W, 3);
+    buildHeader(W) {
+        const g = this.add.graphics();
+        g.fillStyle(0xe9e8e8); // surface-container
+        g.fillRect(0, 0, W, 72);
+        g.fillStyle(ADMIN_COL.secondary);
+        g.fillRect(0, 68, W, 4); // 4px border-b
 
-        const back = this.add.text(20, 20, '← Back', {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '15px', fontStyle: 'bold', color: '#aabbcc'
-        }).setInteractive({ cursor: 'pointer' });
-        back.on('pointerover', () => back.setColor('#ff9900'));
-        back.on('pointerout',  () => back.setColor('#aabbcc'));
-        back.on('pointerdown', () => this.scene.start('MainScene'));
+        this.add.text(20, 36, '← BACK', {
+            fontFamily: A_HEAD, fontSize: '14px', fontStyle: 'bold',
+            color: '#8f4816'
+        }).setOrigin(0, 0.5).setInteractive({ cursor: 'pointer' })
+          .on('pointerover', function() { this.setColor('#5a2e0e'); })
+          .on('pointerout',  function() { this.setColor('#8f4816'); })
+          .on('pointerdown', () => this.scene.start('MainScene'));
 
-        this.add.text(W / 2, 36, isAdminLoggedIn() ? '⚙️  Admin Panel' : '🔒  Admin Login', {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '26px', fontStyle: 'bold', color: '#ff9900'
+        this.add.text(W / 2, 36, isAdminLoggedIn() ? '⚙️  ADMIN PANEL' : '🔒  ADMIN LOGIN', {
+            fontFamily: A_HEAD, fontSize: '26px', fontStyle: 'bold',
+            color: '#8f4816', letterSpacing: 2
         }).setOrigin(0.5);
     }
 
     // ── LOGIN ─────────────────────────────────────────────────────
 
     showLogin(W, H) {
-        this.add.text(W / 2, 108, 'ENTER YOUR PASSWORD TO MANAGE PROJECT STATUSES', {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '7px', color: '#cc8822'
+        this.add.text(W / 2, 100, 'ENTER YOUR PASSWORD TO MANAGE PROJECT STATUSES', {
+            fontFamily: A_HEAD, fontSize: '10px',
+            color: '#5b5b5c', letterSpacing: 1
         }).setOrigin(0.5);
 
-        // Input box
+        // Excavated input box (Stitch: surface-container-highest, 4px border bottom on focus)
+        const ibx = W / 2 - 200, iby = H / 2 - 50, ibw = 400, ibh = 80;
         const ibg = this.add.graphics();
         ibg.fillStyle(0xffffff);
-        ibg.fillRoundedRect(W / 2 - 190, H / 2 - 38, 380, 76, 12);
-        ibg.lineStyle(2, 0xff9900);
-        ibg.strokeRoundedRect(W / 2 - 190, H / 2 - 38, 380, 76, 12);
+        ibg.fillRect(ibx, iby, ibw, ibh);
+        // 4px bottom border (Stitch: "excavated field")
+        ibg.fillStyle(ADMIN_COL.secondary);
+        ibg.fillRect(ibx, iby + ibh - 4, ibw, 4);
+        // Hard shadow
+        ibg.fillStyle(0x000000, 0.12);
+        ibg.fillRect(ibx + 4, iby + 4, ibw, ibh);
+        // Redraw card on top
+        ibg.fillStyle(0xffffff);
+        ibg.fillRect(ibx, iby, ibw, ibh);
+        ibg.fillStyle(ADMIN_COL.secondary);
+        ibg.fillRect(ibx, iby + ibh - 4, ibw, 4);
 
-        this.add.text(W / 2, H / 2 - 22, 'PASSWORD', {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '7px', color: '#ccaa66'
+        this.add.text(W / 2, iby + 20, 'PASSWORD', {
+            fontFamily: A_HEAD, fontSize: '10px', fontStyle: 'bold',
+            color: '#8f4816', letterSpacing: 2
         }).setOrigin(0.5);
 
-        this.inputDisplay = this.add.text(W / 2, H / 2 + 10, '|', {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '20px', color: '#1a1a3a'
+        this.inputDisplay = this.add.text(W / 2, iby + 54, '|', {
+            fontFamily: A_BODY, fontSize: '22px', fontStyle: 'bold',
+            color: '#2e2f2f'
         }).setOrigin(0.5);
 
-        // Blinking cursor
         this.time.addEvent({
             delay: 500, repeat: -1,
             callback: () => { this.cursorOn = !this.cursorOn; this.refreshInput(); }
         });
 
-        // Keyboard
         this.input.keyboard.on('keydown', (e) => {
             if (e.key === 'Backspace') {
                 this.typedPw = this.typedPw.slice(0, -1);
@@ -95,16 +116,16 @@ class AdminScene extends Phaser.Scene {
             this.refreshInput();
         });
 
-        this.makeBtn(W / 2, H / 2 + 90, 160, 42, 'LOGIN', '#ff9900', 0xff9900, () => this.doLogin());
+        this.makeBtn(W / 2, H / 2 + 80, 180, 44, 'LOGIN', ADMIN_COL.primary, '#d5ffbb', () => this.doLogin());
 
-        this.errorText = this.add.text(W / 2, H / 2 + 158, '', {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '10px', color: '#ee3333'
+        this.errorText = this.add.text(W / 2, H / 2 + 148, '', {
+            fontFamily: A_HEAD, fontSize: '12px', fontStyle: 'bold',
+            color: '#b02500'
         }).setOrigin(0.5);
 
-        this.add.text(W / 2, H - 36, 'DEFAULT PASSWORD: admin   ·   CHANGE HASH IN js/config.js', {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '7px', color: '#ddccbb'
+        this.add.text(W / 2, H - 28, 'Default password: admin   ·   Change hash in js/config.js', {
+            fontFamily: A_BODY, fontSize: '11px',
+            color: '#adadad'
         }).setOrigin(0.5);
     }
 
@@ -130,32 +151,27 @@ class AdminScene extends Phaser.Scene {
     // ── ADMIN PANEL ───────────────────────────────────────────────
 
     showPanel(W, H) {
-        this.add.text(W / 2, 105, 'CLICK A STATUS TO CHANGE IT  ·  OTHERS ONLY SEE, NOT CHANGE', {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '7px', color: '#cc8822'
+        this.add.text(W / 2, 96, 'CLICK A STATUS TO CHANGE IT  ·  VISITORS CAN ONLY VIEW', {
+            fontFamily: A_HEAD, fontSize: '9px',
+            color: '#5b5b5c', letterSpacing: 1
         }).setOrigin(0.5);
 
-        // Dynamic 2-column layout, auto-row
         const COLS  = 2;
         const GAP_X = 14;
         const GAP_Y = 10;
-        const ROW_H = Math.min(88, Math.floor((H - 180) / Math.ceil(PROJECTS.length / COLS)) - GAP_Y);
+        const ROW_H = Math.min(82, Math.floor((H - 190) / Math.ceil(PROJECTS.length / COLS)) - GAP_Y);
         const ROW_W = Math.floor((W - 60 - GAP_X) / COLS);
-        const totalH = Math.ceil(PROJECTS.length / COLS) * (ROW_H + GAP_Y) - GAP_Y;
         const startX = (W - (COLS * ROW_W + GAP_X)) / 2;
-        const startY = 128;
+        const startY = 120;
+        const totalH = Math.ceil(PROJECTS.length / COLS) * (ROW_H + GAP_Y) - GAP_Y;
 
         PROJECTS.forEach((proj, i) => {
             const col = i % COLS;
             const row = Math.floor(i / COLS);
-            this.buildRow(proj,
-                startX + col * (ROW_W + GAP_X),
-                startY + row * (ROW_H + GAP_Y),
-                ROW_W, ROW_H);
+            this.buildRow(proj, startX + col * (ROW_W + GAP_X), startY + row * (ROW_H + GAP_Y), ROW_W, ROW_H);
         });
 
-        // Logout
-        this.makeBtn(W / 2, startY + totalH + 30, 180, 38, 'LOGOUT', '#ee4411', 0xee4411, () => {
+        this.makeBtn(W / 2, startY + totalH + 30, 180, 40, 'LOGOUT', ADMIN_COL.error, '#ffefec', () => {
             setAdminLoggedIn(false);
             this.scene.start('MainScene');
         });
@@ -165,38 +181,39 @@ class AdminScene extends Phaser.Scene {
         const status = getProjectStatus(proj.id);
         const sInfo  = STATUS_TYPES[status];
 
+        // Hard shadow
+        const g = this.add.graphics();
+        g.fillStyle(0x000000, 0.12);
+        g.fillRect(x + 4, y + 4, w, h);
         // Card
-        const bg = this.add.graphics();
-        bg.fillStyle(0xffffff);
-        bg.fillRoundedRect(x, y, w, h, 8);
-        bg.lineStyle(1.5, 0xffddc0);
-        bg.strokeRoundedRect(x, y, w, h, 8);
-        bg.fillStyle(sInfo.color);
-        bg.fillRoundedRect(x + 1, y + 1, 5, h - 2, { tl: 8, tr: 0, bl: 8, br: 0 });
+        g.fillStyle(0xffffff);
+        g.fillRect(x, y, w, h);
+        // 4px left bar in status color
+        g.fillStyle(sInfo.color);
+        g.fillRect(x, y, 8, h);
+        // 4px bottom border
+        g.fillStyle(0xe9e8e8);
+        g.fillRect(x, y + h - 3, w, 3);
 
-        // Name
-        this.add.text(x + 16, y + 10, proj.name.toUpperCase(), {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '8px', color: '#1a1a3a',
-            wordWrap: { width: w - 220 }
+        this.add.text(x + 18, y + h / 2 - 8, proj.name, {
+            fontFamily: A_HEAD, fontSize: '13px', fontStyle: 'bold',
+            color: '#2e2f2f'
         });
 
-        // Current status label
-        this.add.text(x + 16, y + h - 18, '● ' + status, {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '6px', color: sInfo.hex
+        this.add.text(x + 18, y + h / 2 + 10, sInfo.label, {
+            fontFamily: A_BODY, fontSize: '11px',
+            color: sInfo.hex
         });
 
-        // Status buttons
         const btns = [
-            { key: 'GOOD',        label: '✅ works', info: STATUS_TYPES.GOOD },
-            { key: 'MAINTENANCE', label: '🔧 fixing', info: STATUS_TYPES.MAINTENANCE },
-            { key: 'BROKEN',      label: '💀 rip',   info: STATUS_TYPES.BROKEN }
+            { key: 'GOOD',        label: '✅ Works',  info: STATUS_TYPES.GOOD },
+            { key: 'MAINTENANCE', label: '🔧 Fixing', info: STATUS_TYPES.MAINTENANCE },
+            { key: 'BROKEN',      label: '💀 Broken', info: STATUS_TYPES.BROKEN }
         ];
 
-        const bw = 60, bh = h - 20, gap = 5;
-        const bStartX = x + w - btns.length * (bw + gap) - 6;
-        const bStartY = y + 10;
+        const bw = 68, bh = h - 16, gap = 5;
+        const bStartX = x + w - btns.length * (bw + gap) - 8;
+        const bStartY = y + 8;
 
         btns.forEach((btn, i) => {
             const bx      = bStartX + i * (bw + gap);
@@ -205,46 +222,47 @@ class AdminScene extends Phaser.Scene {
 
             const draw = (hov) => {
                 bgG.clear();
-                bgG.fillStyle(isActive ? btn.info.color : (hov ? 0xfff0e0 : 0xf9f9f9));
-                bgG.fillRoundedRect(bx, bStartY, bw, bh, 5);
-                bgG.lineStyle(1.5, btn.info.color, isActive || hov ? 1 : 0.45);
-                bgG.strokeRoundedRect(bx, bStartY, bw, bh, 5);
+                bgG.fillStyle(isActive ? btn.info.color : (hov ? 0xe3e2e2 : 0xf2f0f0));
+                bgG.fillRect(bx, bStartY, bw, bh);
+                bgG.fillStyle(0x000000, isActive ? 0.3 : 0.12);
+                bgG.fillRect(bx, bStartY + bh - 3, bw, 3);
+                bgG.fillRect(bx + bw - 3, bStartY, 3, bh);
             };
             draw(false);
 
             const txt = this.add.text(bx + bw / 2, bStartY + bh / 2, btn.label, {
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: '6px',
+                fontFamily: A_HEAD, fontSize: '10px', fontStyle: 'bold',
                 color: isActive ? '#ffffff' : btn.info.hex
             }).setOrigin(0.5).setInteractive({ cursor: 'pointer' });
 
             txt.on('pointerover', () => draw(true));
             txt.on('pointerout',  () => draw(false));
-            txt.on('pointerdown', () => {
-                setProjectStatus(proj.id, btn.key);
-                this.scene.restart();
-            });
+            txt.on('pointerdown', () => { setProjectStatus(proj.id, btn.key); this.scene.restart(); });
         });
     }
 
-    makeBtn(cx, cy, w, h, label, col, hcol, cb) {
+    makeBtn(cx, cy, w, h, label, bgCol, txCol, cb) {
+        const bx = cx - w / 2, by = cy - h / 2;
         const bgG = this.add.graphics();
+
         const draw = (hov) => {
             bgG.clear();
-            bgG.fillStyle(hcol, hov ? 0.14 : 0.07);
-            bgG.fillRoundedRect(cx - w / 2, cy - h / 2, w, h, 8);
-            bgG.lineStyle(2, hcol, hov ? 1 : 0.55);
-            bgG.strokeRoundedRect(cx - w / 2, cy - h / 2, w, h, 8);
+            bgG.fillStyle(bgCol, hov ? 1 : 0.85);
+            bgG.fillRect(bx, by, w, h);
+            bgG.fillStyle(0x000000, hov ? 0.35 : 0.25);
+            bgG.fillRect(bx, by + h - 4, w, 4);
+            bgG.fillRect(bx + w - 4, by, 4, h);
+            bgG.fillStyle(0xffffff, 0.2);
+            bgG.fillRect(bx, by, w, 4);
+            bgG.fillRect(bx, by, 4, h);
         };
         draw(false);
 
-        const txt = this.add.text(cx, cy, label, {
-            fontFamily: "'Poppins', sans-serif",
-            fontSize: '11px', color: col
-        }).setOrigin(0.5).setInteractive({ cursor: 'pointer' });
-
-        txt.on('pointerover', () => draw(true));
-        txt.on('pointerout',  () => draw(false));
-        txt.on('pointerdown', cb);
+        this.add.text(cx, cy, label, {
+            fontFamily: A_HEAD, fontSize: '13px', fontStyle: 'bold', color: txCol
+        }).setOrigin(0.5).setInteractive({ cursor: 'pointer' })
+          .on('pointerover', () => draw(true))
+          .on('pointerout',  () => draw(false))
+          .on('pointerdown', cb);
     }
 }

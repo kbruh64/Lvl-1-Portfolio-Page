@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Full-stack Architect | The Digital Architect</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Work+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed-dim": "#4aedef",
+                        "surface-container-high": "#e3e2e2",
+                        "primary": "#256900",
+                        "error-container": "#f95630",
+                        "on-tertiary-fixed": "#00494a",
+                        "secondary-container": "#ffc5a5",
+                        "surface-container-highest": "#dddddd",
+                        "on-background": "#2e2f2f",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-dim": "#803d0a",
+                        "surface-bright": "#f8f6f6",
+                        "on-error-container": "#520c00",
+                        "surface": "#f8f6f6",
+                        "surface-tint": "#256900",
+                        "on-secondary-fixed": "#582500",
+                        "on-surface": "#2e2f2f",
+                        "on-error": "#ffefec",
+                        "outline-variant": "#adadad",
+                        "tertiary-container": "#5dfbfe",
+                        "error-dim": "#b92902",
+                        "primary-fixed": "#95f169",
+                        "inverse-on-surface": "#9d9d9d",
+                        "surface-dim": "#d4d4d4",
+                        "primary-container": "#95f169",
+                        "secondary": "#8f4816",
+                        "inverse-primary": "#95f169",
+                        "secondary-fixed-dim": "#ffb285",
+                        "surface-variant": "#dddddd",
+                        "tertiary-dim": "#00595b",
+                        "outline": "#777777",
+                        "tertiary-fixed": "#5dfbfe",
+                        "secondary-fixed": "#ffc5a5",
+                        "on-surface-variant": "#5b5b5c",
+                        "on-primary-fixed-variant": "#226300",
+                        "on-primary-container": "#1e5800",
+                        "inverse-surface": "#0d0e0f",
+                        "surface-container-low": "#f2f0f0",
+                        "error": "#b02500",
+                        "background": "#f8f6f6",
+                        "on-tertiary": "#befeff",
+                        "on-secondary-fixed-variant": "#813e0b",
+                        "on-tertiary-fixed-variant": "#00686a",
+                        "primary-dim": "#1f5c00",
+                        "tertiary": "#006668",
+                        "on-primary-fixed": "#154300",
+                        "surface-container": "#e9e8e8",
+                        "primary-fixed-dim": "#87e25d",
+                        "on-secondary-container": "#763502",
+                        "on-tertiary-container": "#005d5f",
+                        "on-primary": "#d5ffbb",
+                        "on-secondary": "#fff0e9"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Work Sans"],
+                        "label": ["Work Sans"]
+                    },
+                    borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "0px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .voxel-grid {
+            background-image: radial-gradient(circle, #adadad 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .hard-shadow {
+            box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.2);
+        }
+        .carved-button {
+            border-bottom: 4px solid rgba(0,0,0,0.3);
+            border-right: 4px solid rgba(0,0,0,0.3);
+            border-top: 4px solid rgba(255,255,255,0.2);
+            border-left: 4px solid rgba(255,255,255,0.2);
+        }
+        .carved-button:active {
+            border-top: 4px solid rgba(0,0,0,0.3);
+            border-left: 4px solid rgba(0,0,0,0.3);
+            border-bottom: 4px solid rgba(255,255,255,0.2);
+            border-right: 4px solid rgba(255,255,255,0.2);
+            transform: translate(2px, 2px);
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopAppBar -->
+<header class="sticky top-0 z-50 bg-stone-200/80 dark:bg-stone-900/80 backdrop-blur-md border-b-4 border-stone-400 dark:border-stone-800 flex justify-between items-center w-full px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-primary-container border-2 border-primary-dim overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-dim text-3xl">developer_mode_tv</span>
+</div>
+<h1 class="text-2xl font-bold text-lime-900 dark:text-lime-100 font-headline uppercase tracking-wider">The Digital Architect</h1>
+</div>
+<nav class="hidden md:flex gap-8 items-center">
+<a class="font-headline uppercase tracking-wider text-lime-600 border-b-4 border-lime-600 pb-1" href="#">Source</a>
+<a class="font-headline uppercase tracking-wider text-stone-500 hover:text-stone-800 dark:text-stone-400 transition-colors" href="#">Repos</a>
+<a class="font-headline uppercase tracking-wider text-stone-500 hover:text-stone-800 dark:text-stone-400 transition-colors" href="#">Status</a>
+<button class="p-2 hover:bg-stone-300 dark:hover:bg-stone-700 transition-colors active:translate-y-1">
+<span class="material-symbols-outlined text-lime-700 dark:text-lime-400">terminal</span>
+</button>
+</nav>
+</header>
+<main class="voxel-grid">
+<!-- Hero Section: Code Command Center -->
+<section class="relative min-h-[707px] flex items-center px-6 md:px-24 py-20 bg-primary-container/20">
+<div class="absolute inset-0 z-0 opacity-30">
+<img class="w-full h-full object-cover" data-alt="Abstract pixelated circuit board patterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8Fh96LHKqV86tGb07oWT7nCUOsRgra1Lx0AaiwrGFjzUA-a-27KvsOeUTKZywqTImHPfuf6yOOBXTX1N33WoXkAKfZbmxpA0ADbvQrIxpA6MY219tFk69xNOZJYV238Y2v1dMH32SSmGRYBaJu_GbclKa3AbgE-9HRbxSzQxN92h5UoY3OOw9Zzh7-P9_-DVJuiZuui_qHe2uc8fbZ_iAo72RsNhF6HNG5ubX9udUyTvREHZW99CSy0RFV33fSP7xvKxfP2jS5rc"/>
+</div>
+<div class="relative z-10 max-w-4xl space-y-8">
+<div class="bg-surface p-8 border-4 border-primary shadow-[12px_12px_0px_0px_rgba(37,105,0,0.3)]">
+<h2 class="text-6xl md:text-8xl font-headline font-bold text-on-surface leading-none uppercase">DEVELOPMENT PORTFOLIO</h2>
+<p class="mt-6 text-xl md:text-2xl text-on-surface-variant max-w-2xl leading-relaxed">Reviewing robust digital structures, scalable systems, and pixel-perfect execution. Initialize presentation mode below.</p>
+<div class="mt-10 flex flex-wrap gap-4">
+<button class="carved-button bg-primary text-on-primary px-8 py-4 font-headline font-bold uppercase tracking-widest text-lg transition-all">VIEW PRESENTATION</button>
+<button class="carved-button bg-surface-container-highest text-on-surface-variant px-8 py-4 font-headline font-bold uppercase tracking-widest text-lg transition-all">PROJECT OVERVIEW</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid: Repositories (Categories) -->
+<section class="px-6 md:px-24 py-24 bg-surface">
+<div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+<div class="space-y-2">
+<span class="text-primary font-bold font-headline uppercase tracking-tighter text-sm">PROJECT ARCHIVE</span>
+<h3 class="text-5xl font-headline font-bold uppercase">CORE CODING PROJECTS</h3>
+</div>
+<div class="h-1 bg-outline-variant flex-grow mx-8 hidden md:block"></div>
+<span class="text-on-surface-variant font-mono">ARCHIVE_STATUS: READ_ONLY</span>
+</div>
+<div class="grid grid-cols-1 grid-rows-2 gap-6 h-auto md:h-[600px] md:grid-cols-6">
+<!-- Coding Biome -->
+<div class="md:col-span-2 md:row-span-2 bg-secondary-container p-8 flex flex-col justify-between border-4 border-secondary group hover:bg-secondary-fixed transition-colors">
+<div>
+<span class="material-symbols-outlined text-4xl text-on-secondary-container">database</span>
+<h4 class="text-4xl font-headline font-bold mt-4 text-on-secondary-container">THE LOGIC CORE</h4>
+<p class="mt-4 text-on-secondary-container/80 max-w-xs">High-concurrency backend engineering and complex distributed systems built with Go, Rust, and Node.js.</p>
+</div>
+<div class="flex justify-between items-end">
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-secondary text-on-secondary text-xs font-bold">KUBERNETES</span>
+<span class="px-3 py-1 bg-secondary text-on-secondary text-xs font-bold">DOCKER</span>
+</div>
+<span class="material-symbols-outlined text-3xl group-hover:translate-x-2 transition-transform">code</span>
+</div>
+</div>
+<!-- Art Biome -->
+<div class="md:col-span-2 bg-tertiary-container p-8 flex flex-col justify-between border-4 border-tertiary group hover:bg-tertiary-fixed transition-colors">
+<div class="flex justify-between">
+<h4 class="text-3xl font-headline font-bold text-on-tertiary-container uppercase">Frontend Stack</h4>
+<span class="material-symbols-outlined text-4xl text-on-tertiary-container">web</span>
+</div>
+<p class="text-on-tertiary-container/80">Reactive UI components, state management, and optimized client-side rendering.</p>
+</div>
+<!-- Architecture Biome -->
+<div class="md:col-span-1 bg-surface-container-highest p-6 flex flex-col justify-between border-4 border-stone-400 group hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-3xl">schema</span>
+<h4 class="text-xl font-headline font-bold mt-4 uppercase">Data Schema</h4>
+</div>
+<!-- Nether Project -->
+<div class="md:col-span-1 bg-error-container p-6 flex flex-col justify-between border-4 border-error group hover:brightness-110 transition-all">
+<span class="material-symbols-outlined text-3xl text-on-error-container">memory</span>
+<h4 class="text-xl font-headline font-bold mt-4 text-on-error-container uppercase">Hardware</h4>
+</div>
+<!-- Deep Dark -->
+<div class="md:col-span-1 bg-[#0a191e] p-6 flex flex-col justify-between border-4 border-[#00f2ff] group hover:brightness-125 transition-all">
+<span class="material-symbols-outlined text-3xl text-[#00f2ff]">security</span>
+<h4 class="text-xl font-headline font-bold mt-4 text-[#00f2ff] uppercase">Encryption</h4>
+</div>
+</div>
+</section>
+<!-- Character Stats: About Me -->
+<section class="px-6 md:px-24 py-24 bg-surface-container-low border-y-4 border-stone-300">
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-16 items-start">
+<div class="w-full md:w-1/3">
+<div class="aspect-square bg-stone-900 border-4 border-stone-700 p-8 shadow-[12px_12px_0px_0px_rgba(0,0,0,0.1)] flex flex-col justify-center items-center text-lime-400 gap-4">
+<span class="material-symbols-outlined text-8xl">account_tree</span>
+<span class="font-mono text-sm opacity-60">ROOT_USER_IMG.PNG</span>
+</div>
+</div>
+<div class="w-full md:w-2/3 space-y-12">
+<div>
+<h3 class="text-5xl font-headline font-bold uppercase">Developer Stats</h3>
+<p class="mt-6 text-xl text-on-surface-variant leading-relaxed">
+                    Senior Software Engineer with 8+ years experience in full-stack architecture. Specialized in building scalable cloud infrastructures and modular microservices. Level 42 Architect based in the virtual void.
+                </p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+<div class="space-y-4">
+<div class="flex justify-between items-center mb-2">
+<span class="font-headline font-bold uppercase text-primary">Algorithms</span>
+<span class="font-mono text-primary font-bold">98/100</span>
+</div>
+<div class="h-6 w-full bg-stone-200 border-2 border-stone-400 p-1">
+<div class="h-full bg-primary w-[98%]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center mb-2">
+<span class="font-headline font-bold uppercase text-secondary">DevOps</span>
+<span class="font-mono text-secondary font-bold">92/100</span>
+</div>
+<div class="h-6 w-full bg-stone-200 border-2 border-stone-400 p-1">
+<div class="h-full bg-secondary w-[92%]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center mb-2">
+<span class="font-headline font-bold uppercase text-tertiary">UX Logic</span>
+<span class="font-mono text-tertiary font-bold">85/100</span>
+</div>
+<div class="h-6 w-full bg-stone-200 border-2 border-stone-400 p-1">
+<div class="h-full bg-tertiary w-[85%]"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center mb-2">
+<span class="font-headline font-bold uppercase text-error">Debug Stamina</span>
+<span class="font-mono text-error font-bold">MAX</span>
+</div>
+<div class="h-6 w-full bg-stone-200 border-2 border-stone-400 p-1">
+<div class="h-full bg-error w-full"></div>
+</div>
+</div>
+</div>
+<div class="p-6 bg-surface border-4 border-primary border-l-[16px]">
+<p class="italic text-on-surface-variant font-headline text-lg">
+                    "Talk is cheap. Show me the code. Every block of logic must have structural integrity."
+                </p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA: Enchantment Table -->
+<section class="py-24 px-6 md:px-24 flex justify-center">
+<div class="w-full max-w-4xl bg-stone-800 p-12 relative overflow-hidden text-center space-y-8 border-4 border-tertiary shadow-[0px_0px_40px_rgba(93,251,254,0.2)]">
+<div class="absolute top-0 left-0 w-full h-1 bg-tertiary animate-pulse"></div>
+<h3 class="text-4xl md:text-6xl font-headline font-bold text-tertiary-fixed uppercase">Initialize Collaboration?</h3>
+<p class="text-tertiary-fixed-dim/70 text-lg md:text-xl font-mono">CONNECTION_SECURE: YES // BANDWIDTH: OPTIMAL</p>
+<div class="flex justify-center">
+<button class="carved-button bg-tertiary text-on-tertiary-container px-12 py-5 font-headline font-bold uppercase tracking-widest text-xl hover:bg-tertiary-fixed transition-colors">
+                Ping the Engineer
+            </button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-1 bg-stone-800/90 dark:bg-black/90 border-4 border-stone-600 px-2 py-1 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)]">
+<button class="bg-stone-600 ring-2 ring-white p-2 scale-110 active:scale-95">
+<span class="material-symbols-outlined text-lime-400">home</span>
+</button>
+<button class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95">
+<span class="material-symbols-outlined">source</span>
+</button>
+<button class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95">
+<span class="material-symbols-outlined">settings_ethernet</span>
+</button>
+<button class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95">
+<span class="material-symbols-outlined">monitoring</span>
+</button>
+<button class="text-stone-400 p-2 hover:bg-stone-700 active:scale-95">
+<span class="material-symbols-outlined">badge</span>
+</button>
+</nav>
+<!-- Footer -->
+<footer class="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-8 bg-lime-900 dark:bg-stone-950 border-t-[12px] border-lime-600 dark:border-stone-800">
+<div class="space-y-2 text-center md:text-left">
+<span class="font-['Space_Grotesk'] font-bold text-lime-400 text-2xl uppercase">System_Architect_v2</span>
+<p class="font-['Work_Sans'] text-sm leading-relaxed text-lime-100/60 max-w-xs">
+            © 2024 Voxel-Chic Engineering. Built block by block, byte by byte.
+        </p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="font-['Work_Sans'] text-sm text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">Mainframe</a>
+<a class="font-['Work_Sans'] text-sm text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer text-white underline" href="#">Nether-Server</a>
+<a class="font-['Work_Sans'] text-sm text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">End_Point</a>
+<a class="font-['Work_Sans'] text-sm text-lime-300/80 hover:text-white hover:translate-x-1 transition-transform cursor-pointer" href="#">Docs</a>
+</div>
+<div class="flex gap-4">
+<div class="w-12 h-12 bg-lime-800 flex items-center justify-center border-b-4 border-lime-950">
+<span class="material-symbols-outlined text-lime-400">terminal</span>
+</div>
+<div class="w-12 h-12 bg-lime-800 flex items-center justify-center border-b-4 border-lime-950">
+<span class="material-symbols-outlined text-lime-400">alternate_email</span>
+</div>
+</div>
+</footer>
+</body></html>
