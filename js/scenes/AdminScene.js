@@ -37,17 +37,17 @@ class AdminScene extends Phaser.Scene {
         hg.fillStyle(0xff9900);
         hg.fillRect(0, 69, W, 3);
 
-        const back = this.add.text(20, 20, '[ < BACK ]', {
+        const back = this.add.text(20, 20, '← Back', {
             fontFamily: "'Poppins', sans-serif",
-            fontSize: '10px', color: '#aabbcc'
+            fontSize: '15px', fontStyle: 'bold', color: '#aabbcc'
         }).setInteractive({ cursor: 'pointer' });
         back.on('pointerover', () => back.setColor('#ff9900'));
         back.on('pointerout',  () => back.setColor('#aabbcc'));
         back.on('pointerdown', () => this.scene.start('MainScene'));
 
-        this.add.text(W / 2, 36, isAdminLoggedIn() ? 'ADMIN PANEL' : 'ADMIN LOGIN', {
+        this.add.text(W / 2, 36, isAdminLoggedIn() ? '⚙️  Admin Panel' : '🔒  Admin Login', {
             fontFamily: "'Poppins', sans-serif",
-            fontSize: '20px', color: '#ff9900'
+            fontSize: '26px', fontStyle: 'bold', color: '#ff9900'
         }).setOrigin(0.5);
     }
 
