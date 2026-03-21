@@ -64,6 +64,13 @@ const PROJECTS = [
         description: 'Canvas dungeon adventure with void creatures',
         url: 'https://monsterpet-dungeon.vercel.app/',
         tech: ['Canvas', 'JS']
+    },
+    {
+        id: 'value-scanner',
+        name: 'Value Scanner',
+        description: 'Draw a circle around any item — AI estimates its worth',
+        url: 'https://value-scanner-e0p8dxaxt-felix-aos-projects.vercel.app/',
+        tech: ['Claude AI', 'JS']
     }
 ];
 

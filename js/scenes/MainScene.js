@@ -1,10 +1,8 @@
-// Bright rotating palette for card name text
 const CARD_COLORS = [
     '#e6004d', '#ff6200', '#00aa44', '#2255ff',
-    '#9922cc', '#cc2200', '#0099cc', '#dd8800', '#00997a'
+    '#9922cc', '#cc2200', '#0099cc', '#dd8800', '#00997a', '#cc44aa'
 ];
 
-// Tag badge colours (bg hex, text hex)
 const TAG_PALETTE = [
     { bg: 0xffe0f0, tx: '#cc0055' },
     { bg: 0xfff0d8, tx: '#cc5500' },
@@ -16,31 +14,45 @@ const TAG_PALETTE = [
 class MainScene extends Phaser.Scene {
     constructor() {
         super({ key: 'MainScene' });
-        this.HEADER_H = 88;
-        this.FOOTER_H = 68;
-        this.titleClicks = 0;
+        this.HEADER_H      = 88;
+        this.FOOTER_H      = 68;
+        this.titleClicks   = 0;
         this.lastTitleClick = 0;
+        this.scrollY       = 0;
+        this.maxScroll     = 0;
+        this.scrollItems   = []; // { obj, baseY }
     }
 
     create() {
         const W = this.scale.width;
         const H = this.scale.height;
-        this.isAdmin = isAdminLoggedIn();
+        this.isAdmin     = isAdminLoggedIn();
+        this.scrollItems = [];
+        this.scrollY     = 0;
 
-        // Light background with coloured dots
         this.add.rectangle(0, 0, W, H, 0xf0f4ff).setOrigin(0, 0);
         const dots = this.add.graphics();
         const dotCols = [0xc0d0ff, 0xffc8d8, 0xc8f0d8, 0xffe8c0];
-        for (let x = 28; x < W; x += 38) {
-            for (let y = 28; y < H; y += 38) {
-                dots.fillStyle(dotCols[(Math.floor(x / 38) + Math.floor(y / 38)) % dotCols.length], 0.55);
-                dots.fillCircle(x, y, 2);
+        for (let dx = 28; dx < W; dx += 38)
+            for (let dy = 28; dy < H; dy += 38) {
+                dots.fillStyle(dotCols[(Math.floor(dx / 38) + Math.floor(dy / 38)) % dotCols.length], 0.55);
+                dots.fillCircle(dx, dy, 2);
             }
-        }
 
         this.buildProjectGrid(W, H);
-        this.buildHeader(W, H);
+        this.buildHeader(W);
         this.buildFooter(W, H);
+
+        // Blockers: stop clicks reaching scrolled cards under header/footer
+        this.add.rectangle(W / 2, this.HEADER_H / 2, W, this.HEADER_H)
+            .setAlpha(0.001).setDepth(49).setInteractive();
+        this.add.rectangle(W / 2, H - this.FOOTER_H / 2, W, this.FOOTER_H)
+            .setAlpha(0.001).setDepth(49).setInteractive();
+
+        this.input.on('wheel', (_p, _g, _dx, dy) => {
+            this.scrollY = Phaser.Math.Clamp(this.scrollY + dy * 0.6, 0, this.maxScroll);
+            this.scrollItems.forEach(({ obj, baseY }) => { obj.y = baseY - this.scrollY; });
+        });
 
         this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.BACKTICK)
             .on('down', () => this.scene.start('AdminScene'));
@@ -55,20 +67,16 @@ class MainScene extends Phaser.Scene {
         g.lineStyle(3, 0xdde8ff);
         g.lineBetween(0, this.HEADER_H, W, this.HEADER_H);
 
-        // Rainbow accent bar
-        const rainbowCols = [0xff2255, 0xff8800, 0xffdd00, 0x22cc55, 0x2266ff, 0x9922ee];
-        const segW = W / rainbowCols.length;
-        rainbowCols.forEach((c, i) => {
+        [0xff2255, 0xff8800, 0xffdd00, 0x22cc55, 0x2266ff, 0x9922ee].forEach((c, i, arr) => {
+            const segW = W / arr.length;
             g.fillStyle(c);
             g.fillRect(i * segW, this.HEADER_H - 4, segW + 1, 4);
         });
 
         this.add.text(W / 2, this.HEADER_H / 2 - 2, "★  FELIX'S PORTFOLIO  ★", {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '24px',
-            color: '#2244ee',
-            stroke: '#aabbff',
-            strokeThickness: 4
+            fontSize: '24px', color: '#2244ee',
+            stroke: '#aabbff', strokeThickness: 4
         }).setOrigin(0.5).setDepth(51).setInteractive({ cursor: 'pointer' })
           .on('pointerdown', () => {
               const now = this.time.now;
@@ -78,14 +86,19 @@ class MainScene extends Phaser.Scene {
           });
 
         if (this.isAdmin) {
-            const badge = this.add.text(W - 14, 18, '[ ADMIN ]', {
+            this.add.text(W - 14, 18, '[ ADMIN ]', {
                 fontFamily: "'Press Start 2P', monospace",
-                fontSize: '11px',
-                color: '#ffffff',
-                backgroundColor: '#ff8800',
-                padding: { x: 9, y: 6 }
-            }).setOrigin(1, 0).setDepth(51).setInteractive({ cursor: 'pointer' });
-            badge.on('pointerdown', () => this.scene.start('AdminScene'));
+                fontSize: '11px', color: '#ffffff',
+                backgroundColor: '#ff8800', padding: { x: 9, y: 6 }
+            }).setOrigin(1, 0).setDepth(51).setInteractive({ cursor: 'pointer' })
+              .on('pointerdown', () => this.scene.start('AdminScene'));
+        }
+
+        if (this.maxScroll > 0) {
+            this.add.text(W / 2, this.HEADER_H - 13, '▼ scroll to see more ▼', {
+                fontFamily: "'Press Start 2P', monospace",
+                fontSize: '7px', color: '#8899cc'
+            }).setOrigin(0.5, 1).setDepth(51);
         }
     }
 
@@ -98,27 +111,24 @@ class MainScene extends Phaser.Scene {
         g.lineStyle(3, 0xdde8ff);
         g.lineBetween(0, H - this.FOOTER_H, W, H - this.FOOTER_H);
 
-        // Bottom rainbow bar
-        const rainbowCols = [0x9922ee, 0x2266ff, 0x22cc55, 0xffdd00, 0xff8800, 0xff2255];
-        const segW = W / rainbowCols.length;
-        rainbowCols.forEach((c, i) => {
+        [0x9922ee, 0x2266ff, 0x22cc55, 0xffdd00, 0xff8800, 0xff2255].forEach((c, i, arr) => {
+            const segW = W / arr.length;
             g.fillStyle(c);
             g.fillRect(i * segW, H - this.FOOTER_H, segW + 1, 4);
         });
 
         const defs = [
-            { label: '🖱 CPS TEST',      col: '#dd0044', hcol: 0xdd0044, scene: 'CPSScene' },
-            { label: '🔨 WHACK-A-MOLE',  col: '#009933', hcol: 0x009933, scene: 'WhackAMoleScene' },
-            { label: '🧩 PUZZLE',         col: '#2244dd', hcol: 0x2244dd, scene: 'PuzzleScene' }
+            { label: '🖱 CPS TEST',     col: '#dd0044', hcol: 0xdd0044, scene: 'CPSScene' },
+            { label: '🔨 WHACK-A-MOLE', col: '#009933', hcol: 0x009933, scene: 'WhackAMoleScene' },
+            { label: '🧩 PUZZLE',        col: '#2244dd', hcol: 0x2244dd, scene: 'PuzzleScene' }
         ];
 
-        const btnW = 230, btnH = 42, gap = 40;
+        const btnW = 228, btnH = 42, gap = 38;
         const totalW = defs.length * btnW + (defs.length - 1) * gap;
-        const startX = (W - totalW) / 2;
         const cy = H - this.FOOTER_H / 2 + 2;
 
         defs.forEach((def, i) => {
-            const cx = startX + i * (btnW + gap) + btnW / 2;
+            const cx = (W - totalW) / 2 + i * (btnW + gap) + btnW / 2;
             const bgG = this.add.graphics().setDepth(51);
 
             const draw = (hover) => {
@@ -130,137 +140,147 @@ class MainScene extends Phaser.Scene {
             };
             draw(false);
 
-            const txt = this.add.text(cx, cy, def.label, {
+            this.add.text(cx, cy, def.label, {
                 fontFamily: "'Press Start 2P', monospace",
-                fontSize: '12px',
-                color: def.col
-            }).setOrigin(0.5).setDepth(52).setInteractive({ cursor: 'pointer' });
-
-            txt.on('pointerover', () => { draw(true);  txt.setStyle({ color: def.col, fontSize: '13px' }); });
-            txt.on('pointerout',  () => { draw(false); txt.setStyle({ color: def.col, fontSize: '12px' }); });
-            txt.on('pointerdown', () => this.scene.start(def.scene));
+                fontSize: '13px', color: def.col
+            }).setOrigin(0.5).setDepth(52).setInteractive({ cursor: 'pointer' })
+              .on('pointerover', () => draw(true))
+              .on('pointerout',  () => draw(false))
+              .on('pointerdown', () => this.scene.start(def.scene));
         });
     }
 
     // ── PROJECT GRID ──────────────────────────────────────────────
 
     buildProjectGrid(W, H) {
-        const COLS  = 3;
-        const GAP_X = 20;
-        const GAP_Y = 14;
-
-        const rows     = Math.ceil(PROJECTS.length / COLS);
-        const contentH = H - this.HEADER_H - this.FOOTER_H;
-        const CARD_W   = Math.floor((W - (COLS + 1) * GAP_X) / COLS);
-        const CARD_H   = Math.min(178, Math.floor((contentH - (rows - 1) * GAP_Y - 24) / rows));
-
+        const COLS   = 3;
+        const GAP_X  = 20;
+        const GAP_Y  = 16;
+        const CARD_H = 190;
+        const CARD_W = Math.floor((W - (COLS + 1) * GAP_X) / COLS);
+        const rows   = Math.ceil(PROJECTS.length / COLS);
         const gridW  = COLS * CARD_W + (COLS - 1) * GAP_X;
         const gridH  = rows * CARD_H + (rows - 1) * GAP_Y;
         const startX = (W - gridW) / 2;
-        const startY = this.HEADER_H + Math.max(8, (contentH - gridH) / 2);
+        const startY = this.HEADER_H + 14;
+
+        this.maxScroll = Math.max(0, startY + gridH - (H - this.FOOTER_H) + 14);
 
         PROJECTS.forEach((proj, idx) => {
-            const col   = idx % COLS;
-            const row   = Math.floor(idx / COLS);
-            const nameCol = CARD_COLORS[idx % CARD_COLORS.length];
+            const col = idx % COLS;
+            const row = Math.floor(idx / COLS);
             this.createCard(
                 proj,
                 startX + col * (CARD_W + GAP_X),
                 startY + row * (CARD_H + GAP_Y),
-                CARD_W, CARD_H, nameCol
+                CARD_W, CARD_H,
+                CARD_COLORS[idx % CARD_COLORS.length]
             );
         });
     }
 
+    // track(obj) — adds to scroll list and returns obj
+    track(obj) {
+        this.scrollItems.push({ obj, baseY: obj.y });
+        return obj;
+    }
+
+    // gfx(y, depth) — graphics positioned at world y=0, with obj.y=y so scrolling moves it
+    gfx(absY, depth) {
+        const g = this.add.graphics().setDepth(depth);
+        g.y = absY;
+        this.scrollItems.push({ obj: g, baseY: absY });
+        return g;
+    }
+
     createCard(proj, x, y, w, h, nameCol) {
-        const status = getProjectStatus(proj.id);
-        const sInfo  = STATUS_TYPES[status];
+        const status    = getProjectStatus(proj.id);
+        const sInfo     = STATUS_TYPES[status];
+        const accentHex = Phaser.Display.Color.HexStringToColor(nameCol).color;
 
-        // Drop shadow
-        const shad = this.add.graphics().setDepth(2);
+        // Shadow — drawn at (x+5, 5) local, obj.y = y
+        const shad = this.gfx(y, 2);
         shad.fillStyle(0xaab8e0);
-        shad.fillRoundedRect(x + 5, y + 5, w, h, 12);
+        shad.fillRoundedRect(x + 5, 5, w, h, 12);
 
-        // Card bg
-        const bg = this.add.graphics().setDepth(3);
-        const drawBg = (hover) => {
+        // Card bg — drawn at (x, 0) local, obj.y = y
+        const bg = this.gfx(y, 3);
+        const rebuildBg = (hover) => {
             bg.clear();
             bg.fillStyle(hover ? 0xeef2ff : 0xffffff);
-            bg.fillRoundedRect(x, y, w, h, 12);
-            bg.lineStyle(hover ? 3 : 2, hover ? Phaser.Display.Color.HexStringToColor(nameCol).color : 0xdde8ff);
-            bg.strokeRoundedRect(x, y, w, h, 12);
+            bg.fillRoundedRect(x, 0, w, h, 12);
+            bg.lineStyle(hover ? 3 : 2, hover ? accentHex : 0xdde8ff);
+            bg.strokeRoundedRect(x, 0, w, h, 12);
         };
-        drawBg(false);
+        rebuildBg(false);
 
-        // Coloured top accent bar
-        const accent = this.add.graphics().setDepth(4);
-        accent.fillStyle(Phaser.Display.Color.HexStringToColor(nameCol).color);
-        accent.fillRoundedRect(x + 1, y + 1, w - 2, 5, { tl: 12, tr: 12, bl: 0, br: 0 });
+        // Top accent bar
+        const accent = this.gfx(y, 4);
+        accent.fillStyle(accentHex);
+        accent.fillRoundedRect(x + 1, 1, w - 2, 6, { tl: 12, tr: 12, bl: 0, br: 0 });
 
         // Left status stripe
-        const stripe = this.add.graphics().setDepth(4);
+        const stripe = this.gfx(y, 4);
         stripe.fillStyle(sInfo.color);
-        stripe.fillRoundedRect(x + 1, y + 1, 7, h - 2, { tl: 12, tr: 0, bl: 12, br: 0 });
+        stripe.fillRoundedRect(x + 1, 1, 7, h - 2, { tl: 12, tr: 0, bl: 12, br: 0 });
 
         // Project name
-        this.add.text(x + 22, y + 18, proj.name.toUpperCase(), {
+        this.track(this.add.text(x + 22, y + 20, proj.name.toUpperCase(), {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '12px',
-            color: nameCol,
-            wordWrap: { width: w - 130 }
-        }).setDepth(5);
+            fontSize: '15px', color: nameCol,
+            wordWrap: { width: w - 140 }
+        }).setDepth(5));
 
-        // Status badge (top right)
-        this.add.text(x + w - 10, y + 18, '● ' + sInfo.label, {
+        // Status badge
+        this.track(this.add.text(x + w - 10, y + 20, '● ' + sInfo.label, {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '8px',
-            color: sInfo.hex
-        }).setOrigin(1, 0).setDepth(5);
+            fontSize: '9px', color: sInfo.hex
+        }).setOrigin(1, 0).setDepth(5));
 
-        // Thin divider
-        const div = this.add.graphics().setDepth(4);
-        div.lineStyle(1, 0xdde8ff, 0.9);
-        div.lineBetween(x + 16, y + 46, x + w - 16, y + 46);
+        // Divider
+        const div = this.gfx(y, 4);
+        div.lineStyle(1.5, 0xdde8ff, 0.9);
+        div.lineBetween(x + 16, 52, x + w - 16, 52);
 
         // Description
-        this.add.text(x + 22, y + 54, proj.description, {
+        this.track(this.add.text(x + 22, y + 62, proj.description, {
             fontFamily: "'Press Start 2P', monospace",
-            fontSize: '8px',
-            color: '#445588',
-            wordWrap: { width: w - 36 }
-        }).setDepth(5);
+            fontSize: '10px', color: '#334488',
+            wordWrap: { width: w - 36 }, lineSpacing: 6
+        }).setDepth(5));
 
-        // Tech tags (bottom)
-        const tagY = y + h - (this.isAdmin ? 56 : 30);
+        // Tech tags
+        const tagAbsY = y + h - (this.isAdmin ? 62 : 34);
         let tagX = x + 16;
         proj.tech.forEach((tag, ti) => {
             const pal = TAG_PALETTE[ti % TAG_PALETTE.length];
-            const tw  = tag.length * 8 + 14;
+            const tw  = tag.length * 8.5 + 16;
             if (tagX + tw > x + w - 8) return;
-            const tg = this.add.graphics().setDepth(5);
+
+            const tg = this.gfx(tagAbsY, 5);
             tg.fillStyle(pal.bg);
-            tg.fillRoundedRect(tagX, tagY, tw, 20, 5);
-            this.add.text(tagX + tw / 2, tagY + 10, tag, {
+            tg.fillRoundedRect(tagX, 0, tw, 22, 5);
+
+            this.track(this.add.text(tagX + tw / 2, tagAbsY + 11, tag, {
                 fontFamily: "'Press Start 2P', monospace",
-                fontSize: '7px',
-                color: pal.tx
-            }).setOrigin(0.5).setDepth(6);
-            tagX += tw + 6;
+                fontSize: '8px', color: pal.tx
+            }).setOrigin(0.5).setDepth(6));
+
+            tagX += tw + 7;
         });
 
         // Hit zone
-        const hit = this.add.rectangle(x + w / 2, y + h / 2, w, h)
-            .setAlpha(0.001).setDepth(6).setInteractive({ cursor: 'pointer' });
-
-        hit.on('pointerover', () => drawBg(true));
-        hit.on('pointerout',  () => drawBg(false));
+        const hit = this.track(
+            this.add.rectangle(x + w / 2, y + h / 2, w, h)
+                .setAlpha(0.001).setDepth(6).setInteractive({ cursor: 'pointer' })
+        );
+        hit.on('pointerover', () => rebuildBg(true));
+        hit.on('pointerout',  () => rebuildBg(false));
         if (proj.url && proj.url !== '#') {
             hit.on('pointerdown', () => window.open(proj.url, '_blank'));
         }
 
-        if (this.isAdmin) {
-            this.addStatusButtons(proj, x, y, w, h);
-        }
+        if (this.isAdmin) this.addStatusButtons(proj, x, y, w, h);
     }
 
     addStatusButtons(proj, x, y, w, h) {
@@ -270,37 +290,36 @@ class MainScene extends Phaser.Scene {
             { key: 'BROKEN',      label: 'BRKN',  info: STATUS_TYPES.BROKEN }
         ];
 
-        const bh = 24, gap = 6;
-        const bw = (w - 44 - gap * 2) / 3;
-        const btnY = y + h - 32;
+        const bh      = 26, gap = 6;
+        const bw      = (w - 44 - gap * 2) / 3;
+        const btnAbsY = y + h - 36;
         const current = getProjectStatus(proj.id);
 
         btns.forEach((btn, i) => {
-            const bx      = x + 22 + i * (bw + gap);
+            const bx       = x + 22 + i * (bw + gap);
             const isActive = current === btn.key;
-            const bgG     = this.add.graphics().setDepth(7);
 
-            const draw = (hov) => {
+            // Button bg — drawn at (bx, 0) local, obj.y = btnAbsY
+            const bgG = this.gfx(btnAbsY, 7);
+            const redraw = (hov) => {
                 bgG.clear();
                 bgG.fillStyle(isActive ? btn.info.color : (hov ? 0xeef4ff : 0xf5f7ff));
-                bgG.fillRoundedRect(bx, btnY, bw, bh, 5);
+                bgG.fillRoundedRect(bx, 0, bw, bh, 5);
                 bgG.lineStyle(isActive || hov ? 2 : 1.5, btn.info.color, isActive || hov ? 1 : 0.4);
-                bgG.strokeRoundedRect(bx, btnY, bw, bh, 5);
+                bgG.strokeRoundedRect(bx, 0, bw, bh, 5);
             };
-            draw(false);
+            redraw(false);
 
-            const txt = this.add.text(bx + bw / 2, btnY + bh / 2, btn.label, {
-                fontFamily: "'Press Start 2P', monospace",
-                fontSize: '7px',
-                color: isActive ? '#ffffff' : btn.info.hex
-            }).setOrigin(0.5).setDepth(8).setInteractive({ cursor: 'pointer' });
-
-            txt.on('pointerover', () => draw(true));
-            txt.on('pointerout',  () => draw(false));
-            txt.on('pointerdown', () => {
-                setProjectStatus(proj.id, btn.key);
-                this.scene.restart();
-            });
+            const txt = this.track(
+                this.add.text(bx + bw / 2, btnAbsY + bh / 2, btn.label, {
+                    fontFamily: "'Press Start 2P', monospace",
+                    fontSize: '8px',
+                    color: isActive ? '#ffffff' : btn.info.hex
+                }).setOrigin(0.5).setDepth(8).setInteractive({ cursor: 'pointer' })
+            );
+            txt.on('pointerover', () => redraw(true));
+            txt.on('pointerout',  () => redraw(false));
+            txt.on('pointerdown', () => { setProjectStatus(proj.id, btn.key); this.scene.restart(); });
         });
     }
 }
