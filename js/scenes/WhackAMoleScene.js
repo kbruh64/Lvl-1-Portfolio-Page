@@ -50,49 +50,54 @@ class WhackAMoleScene extends Phaser.Scene {
     }
 
     buildUI(W, H) {
-        // Top bar
+        // Stitch Overworld header — surface-container-high, 4px primary border
         const hg = this.add.graphics().setDepth(10);
-        hg.fillStyle(0xffffff, 0.95);
-        hg.fillRect(0, 0, W, 68);
-        hg.lineStyle(2, 0xd4f0c0);
-        hg.lineBetween(0, 68, W, 68);
-        hg.fillStyle(0x209950);
-        hg.fillRect(0, 65, W, 3);
+        hg.fillStyle(0xe3e2e2); hg.fillRect(0, 0, W, 68);
+        hg.fillStyle(0x256900); hg.fillRect(0, 64, W, 4); // 4px lush forest border
 
-        // Back
-        const back = this.add.text(20, 20, '[ < BACK ]', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '10px', color: '#99aabb'
-        }).setDepth(11).setInteractive({ cursor: 'pointer' });
-        back.on('pointerover', () => back.setColor('#209950'));
-        back.on('pointerout',  () => back.setColor('#99aabb'));
+        const back = this.add.text(20, 34, '← BACK', {
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: '14px', fontStyle: 'bold', color: '#1e5800'
+        }).setOrigin(0, 0.5).setDepth(11).setInteractive({ cursor: 'pointer' });
+        back.on('pointerover', () => back.setColor('#95f169'));
+        back.on('pointerout',  () => back.setColor('#1e5800'));
         back.on('pointerdown', () => { this.clearTimers(); this.scene.start('MainScene'); });
 
-        // Title
-        this.add.text(W / 2, 34, 'WHACK-A-MOLE', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '22px', color: '#209950'
+        this.add.text(W / 2, 34, '🔨  WHACK-A-MOLE  🔨', {
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: '26px', fontStyle: 'bold', color: '#1e5800'
         }).setOrigin(0.5).setDepth(11);
 
-        // Score / Time
-        this.scoreText = this.add.text(W / 2 - 250, 34, 'SCORE: 0', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '12px', color: '#1a5a2a'
+        // Score + time chips — carved inventory slots (Stitch)
+        const chipDraw = (cx, label, isScore) => {
+            const cw = 160, ch = 36, bx = cx - cw / 2, by = 75;
+            const cg = this.add.graphics().setDepth(10);
+            cg.fillStyle(0xffffff); cg.fillRect(bx, by, cw, ch);
+            cg.fillStyle(0x256900); cg.fillRect(bx, by + ch - 3, cw, 3);
+            cg.fillStyle(0x000000, 0.1); cg.fillRect(bx + cw - 3, by, 3, ch);
+            return cg;
+        };
+        chipDraw(W / 2 - 200, 'SCORE', true);
+        chipDraw(W / 2 + 200, 'TIME', false);
+
+        this.scoreText = this.add.text(W / 2 - 200, 93, 'SCORE: 0', {
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: '16px', fontStyle: 'bold', color: '#1e5800'
         }).setOrigin(0.5).setDepth(11);
 
-        this.timerText = this.add.text(W / 2 + 250, 34, 'TIME: 30', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '12px', color: '#cc6600'
+        this.timerText = this.add.text(W / 2 + 200, 93, 'TIME: 30', {
+            fontFamily: "'Space Grotesk', sans-serif",
+            fontSize: '16px', fontStyle: 'bold', color: '#8f4816'
         }).setOrigin(0.5).setDepth(11);
 
-        // Bottom info bar
+        // Bottom bar — lush forest dark
         const bg2 = this.add.graphics().setDepth(10);
-        bg2.fillStyle(0xffffff, 0.85);
-        bg2.fillRect(0, H - 50, W, 50);
+        bg2.fillStyle(0x1e5800); bg2.fillRect(0, H - 46, W, 46);
+        bg2.fillStyle(0x95f169); bg2.fillRect(0, H - 46, W, 4);
 
-        this.reactionText = this.add.text(W / 2, H - 25, 'HIT A MOLE TO SEE YOUR REACTION TIME!', {
-            fontFamily: "'Press Start 2P', monospace",
-            fontSize: '8px', color: '#668866'
+        this.reactionText = this.add.text(W / 2, H - 23, 'HIT A MOLE TO SEE YOUR REACTION TIME!', {
+            fontFamily: "'Work Sans', sans-serif",
+            fontSize: '12px', color: '#95f169'
         }).setOrigin(0.5).setDepth(11);
     }
 
@@ -162,20 +167,20 @@ class WhackAMoleScene extends Phaser.Scene {
 
     buildStartOverlay(W, H) {
         this.overlay = this.add.graphics().setDepth(20);
-        this.overlay.fillStyle(0xffffff, 0.7);
+        this.overlay.fillStyle(0xedfbd4, 0.85);
         this.overlay.fillRect(0, 0, W, H);
 
         const panel = this.add.graphics().setDepth(21);
-        panel.fillStyle(0x209950, 1);
-        panel.fillRoundedRect(W / 2 - 280, H / 2 - 80, 560, 160, 16);
+        panel.fillStyle(0x1a4a00, 0.3); panel.fillRect(W / 2 - 276, H / 2 - 76, 560, 160); // shadow
+        panel.fillStyle(0x256900); panel.fillRect(W / 2 - 280, H / 2 - 80, 560, 160);
 
         this.add.text(W / 2, H / 2 - 30, 'CLICK TO START!', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Space Grotesk', sans-serif",
             fontSize: '22px', color: '#ffffff'
         }).setOrigin(0.5).setDepth(22);
 
         this.add.text(W / 2, H / 2 + 20, 'WHACK MOLES AS FAST AS POSSIBLE  ·  30 SECONDS', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Space Grotesk', sans-serif",
             fontSize: '8px', color: '#aaffcc'
         }).setOrigin(0.5).setDepth(22);
 
@@ -251,7 +256,7 @@ class WhackAMoleScene extends Phaser.Scene {
 
         // Score pop
         const pop = this.add.text(mole.x, mole.y - 60, '+10', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Space Grotesk', sans-serif",
             fontSize: '14px', color: '#209950'
         }).setOrigin(0.5).setDepth(15);
         this.tweens.add({ targets: pop, y: pop.y - 50, alpha: 0, duration: 500, onComplete: () => pop.destroy() });
@@ -292,13 +297,15 @@ class WhackAMoleScene extends Phaser.Scene {
 
         // Results panel
         const ov = this.add.graphics().setDepth(30);
-        ov.fillStyle(0xffffff, 0.85); ov.fillRect(0, 0, W, H);
+        ov.fillStyle(0xf8f6f6, 0.9); ov.fillRect(0, 0, W, H);
 
+        // Stitch: hard-shadow carved panel, 0px radius
         const panel = this.add.graphics().setDepth(31);
-        panel.fillStyle(0x209950); panel.fillRoundedRect(W / 2 - 330, H / 2 - 170, 660, 340, 18);
+        panel.fillStyle(0x1a4a00, 0.3); panel.fillRect(W / 2 - 326, H / 2 - 166, 660, 340); // shadow
+        panel.fillStyle(0x256900); panel.fillRect(W / 2 - 330, H / 2 - 170, 660, 340);
 
         this.add.text(W / 2, H / 2 - 130, 'TIME\'S UP!', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Space Grotesk', sans-serif",
             fontSize: '28px', color: '#ffffff'
         }).setOrigin(0.5).setDepth(32);
 
@@ -309,11 +316,11 @@ class WhackAMoleScene extends Phaser.Scene {
             ['BEST REACTION', best ? best + 'ms' : '--']
         ].forEach(([label, val], i) => {
             this.add.text(W / 2 - 180, H / 2 - 70 + i * 48, label + ':', {
-                fontFamily: "'Press Start 2P', monospace",
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: '10px', color: '#aaffcc'
             }).setDepth(32);
             this.add.text(W / 2 + 180, H / 2 - 70 + i * 48, String(val), {
-                fontFamily: "'Press Start 2P', monospace",
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontSize: '10px', color: '#ffffff'
             }).setOrigin(1, 0).setDepth(32);
         });
@@ -323,13 +330,13 @@ class WhackAMoleScene extends Phaser.Scene {
 
         // Buttons
         const retryBtn = this.add.text(W / 2 - 100, H / 2 + 140, '[ RETRY ]', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Space Grotesk', sans-serif",
             fontSize: '12px', color: '#ffffff'
         }).setOrigin(0.5).setDepth(32).setInteractive({ cursor: 'pointer' });
         retryBtn.on('pointerdown', () => this.scene.restart());
 
         const backBtn = this.add.text(W / 2 + 100, H / 2 + 140, '[ BACK ]', {
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Space Grotesk', sans-serif",
             fontSize: '12px', color: '#aaffcc'
         }).setOrigin(0.5).setDepth(32).setInteractive({ cursor: 'pointer' });
         backBtn.on('pointerdown', () => this.scene.start('MainScene'));

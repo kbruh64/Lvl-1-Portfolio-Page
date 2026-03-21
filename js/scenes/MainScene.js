@@ -1,11 +1,11 @@
 // ── Stitch "Editorial Voxelism" Biomatic Palette ───────────────
-// Each project card gets a biome identity cycling through these
+// Each card is a different biome — coloured bg, NOT white
 const BIOMES = [
-    { border: 0x256900, shadow: 0x1a4a00, nameCol: '#1e5800', tagBg: 0x95f169, tagTx: '#154300' }, // Lush Forest
-    { border: 0x8f4816, shadow: 0x5a2e0e, nameCol: '#8f4816', tagBg: 0xffc5a5, tagTx: '#582500' }, // Desert/Earth
-    { border: 0x006668, shadow: 0x003d3e, nameCol: '#005d5f', tagBg: 0x5dfbfe, tagTx: '#004446' }, // Diamond/Ocean
-    { border: 0xb02500, shadow: 0x7a1a00, nameCol: '#b02500', tagBg: 0xf95630, tagTx: '#520c00' }, // Nether/Error
-    { border: 0x555555, shadow: 0x333333, nameCol: '#3b3b3c', tagBg: 0xdddddd, tagTx: '#2e2f2f' }, // Stone/Cave
+    { cardBg: 0xedfbd4, border: 0x256900, shadow: 0x1a4a00, nameCol: '#1e5800', tagBg: 0x95f169, tagTx: '#154300' }, // Lush Forest
+    { cardBg: 0xfff0e5, border: 0x8f4816, shadow: 0x5a2e0e, nameCol: '#8f4816', tagBg: 0xffc5a5, tagTx: '#582500' }, // Desert/Earth
+    { cardBg: 0xddfefe, border: 0x006668, shadow: 0x003d3e, nameCol: '#005d5f', tagBg: 0x5dfbfe, tagTx: '#004446' }, // Diamond/Ocean
+    { cardBg: 0xffe8e0, border: 0xb02500, shadow: 0x7a1a00, nameCol: '#b02500', tagBg: 0xf95630, tagTx: '#520c00' }, // Nether/Error
+    { cardBg: 0xeeedec, border: 0x555555, shadow: 0x333333, nameCol: '#3b3b3c', tagBg: 0xdddddd, tagTx: '#2e2f2f' }, // Stone/Cave
 ];
 
 const FONT_HEAD = "'Space Grotesk', sans-serif";
@@ -239,12 +239,11 @@ class MainScene extends Phaser.Scene {
         shad.fillStyle(biome.shadow, 0.35);
         shad.fillRect(x + 4, 4, w, h);
 
-        // Card surface — surface-container-lowest (white)
+        // Card bg — biome coloured, not white
         const bg = this.gfx(y, 3);
         const drawBg = (hover) => {
             bg.clear();
-            // Stitch: hover = surface-bright, normal = surface-container-lowest
-            bg.fillStyle(hover ? COL.surfaceContainerLow : COL.surfaceContainerLowest);
+            bg.fillStyle(hover ? biome.cardBg - 0x0a0a00 : biome.cardBg);
             bg.fillRect(x, 0, w, h);
             // 4px biome border (Stitch: border-4 border-primary, no rounding)
             bg.lineStyle(4, biome.border);
