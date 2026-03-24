@@ -116,7 +116,7 @@ class HomeScene extends Phaser.Scene {
         // Bio body — Work Sans, generous leading
         const bioLines = [
             "I'm 12 years old and I love coding, gaming,",
-            "and running. I have a little brother named Isaac.",
+            "and running. I have a little brother named Issac.",
             "",
             "I build browser games and AI tools — mostly",
             "in JavaScript, Canvas and Phaser.js."

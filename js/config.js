@@ -35,7 +35,7 @@ const PROJECTS = [
         description: 'Local co-op shooter where two players share one keyboard.',
         url: 'https://2playergameyay.vercel.app/',
         tech: ['Phaser.js', 'JS'],
-        story: "Hi, I'm Felix and I built 2 Player Shooter. It's a local multiplayer game where two players fight on the same keyboard — one using WASD and the other using arrow keys. I built this because I wanted to play something with my little brother Isaac without needing two devices.\n\nThe feature I'm most proud of is the weapon variety, because each gun feels different and changes how you play. This was challenging because both players sharing one keyboard can cause key conflicts, and I solved it by carefully choosing key mappings that don't interfere with each other.",
+        story: "Hi, I'm Felix and I built 2 Player Shooter. It's a local multiplayer game where two players fight on the same keyboard — one using WASD and the other using arrow keys. I built this because I wanted to play something with my little brother Issac without needing two devices.\n\nThe feature I'm most proud of is the weapon variety, because each gun feels different and changes how you play. This was challenging because both players sharing one keyboard can cause key conflicts, and I solved it by carefully choosing key mappings that don't interfere with each other.",
     },
     {
         id: 'nutella-sandwich',
