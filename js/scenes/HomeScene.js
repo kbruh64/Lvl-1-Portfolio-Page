@@ -33,19 +33,24 @@ class HomeScene extends Phaser.Scene {
 
         slideIn(this);
 
-        // Fallback bg
-        this.add.graphics().fillStyle(HC.bg).fillRect(0, 0, W, H);
+        // Fallback solid bg
+        const bgG = this.add.graphics();
+        bgG.fillStyle(HC.bg); bgG.fillRect(0, 0, W, H);
 
-        // Wallpaper — always add, Phaser will use __MISSING if load failed
+        // Wallpaper — subtle, behind everything
         try {
             const img = this.add.image(W / 2, H / 2, 'mc-bg');
             const scale = Math.max(W / img.width, H / img.height);
-            img.setScale(scale).setAlpha(0.42);
+            img.setScale(scale).setAlpha(0.18);
         } catch(e) {}
+
+        // Light wash to blend image with theme colour
+        const wash = this.add.graphics();
+        wash.fillStyle(0xf8f6f6, 0.55); wash.fillRect(0, 0, W, H);
 
         // Voxel dot overlay
         const dots = this.add.graphics();
-        dots.fillStyle(0x000000, 0.05);
+        dots.fillStyle(0x000000, 0.04);
         for (let gx = 0; gx <= W; gx += 32)
             for (let gy = 64; gy <= H; gy += 32)
                 dots.fillRect(gx, gy, 2, 2);
