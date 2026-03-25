@@ -24,11 +24,16 @@ class HomeScene extends Phaser.Scene {
         super({ key: 'HomeScene' });
     }
 
+    preload() {
+        // Minecraft wallpaper — save the MC screenshot as assets/mc-bg.jpg
+        this.load.image('mc-bg', 'assets/mc-bg.jpg');
+    }
+
     create() {
         const W = this.scale.width, H = this.scale.height;
 
-        // Smooth fade in from black
-        this.cameras.main.fadeIn(380, 0, 0, 0);
+        // Slide in from the right
+        slideIn(this);
 
         this.drawBg(W, H);
         this.buildNav(W, H);
@@ -42,19 +47,33 @@ class HomeScene extends Phaser.Scene {
 
     drawBg(W, H) {
         const g = this.add.graphics();
+        // Fallback solid bg
         g.fillStyle(HC.bg); g.fillRect(0, 0, W, H);
-        g.fillStyle(HC.outline, 0.25);
+
+        // MC wallpaper (only if loaded)
+        if (this.textures.exists('mc-bg')) {
+            const img = this.add.image(0, 0, 'mc-bg').setOrigin(0, 0);
+            // Scale to cover full canvas, keep aspect ratio
+            const scaleX = W / img.width;
+            const scaleY = H / img.height;
+            img.setScale(Math.max(scaleX, scaleY));
+            img.setAlpha(0.38); // subtle — cards stay readable
+        }
+
+        // Voxel grid overlay — Stitch dot pattern
+        const dots = this.add.graphics();
+        dots.fillStyle(0x000000, 0.06);
         for (let gx = 0; gx <= W; gx += 32)
             for (let gy = 64; gy <= H; gy += 32)
-                g.fillRect(gx, gy, 1, 1);
-        g.fillStyle(HC.primaryFix, 0.05); g.fillRect(0, 64, W, H * 0.45);
+                dots.fillRect(gx, gy, 2, 2);
     }
 
     // ── NAV ───────────────────────────────────────────────────────
 
     buildNav(W) {
         const g = this.add.graphics().setDepth(50);
-        g.fillStyle(HC.containerHi); g.fillRect(0, 0, W, 60);
+        // Nav bar — slightly translucent so MC image peeks through
+        g.fillStyle(0xe3e2e2, 0.94); g.fillRect(0, 0, W, 60);
         g.fillStyle(HC.primary);     g.fillRect(0, 56, W, 4);
 
         this.add.text(24, 30, 'FELIX.DEV', {
@@ -71,99 +90,94 @@ class HomeScene extends Phaser.Scene {
         let nx = W - 24;
         [...links].reverse().forEach(item => {
             const txt = this.add.text(nx, 30, item.label, {
-                fontFamily: H_HEAD, fontSize: '15px', fontStyle: 'bold', color: '#5b5b5c'
+                fontFamily: H_HEAD, fontSize: '15px', fontStyle: 'bold', color: '#2e2f2f'
             }).setOrigin(1, 0.5).setDepth(51).setInteractive({ cursor: 'pointer' });
             txt.on('pointerover', () => txt.setStyle({ color: '#256900' }));
-            txt.on('pointerout',  () => txt.setStyle({ color: '#5b5b5c' }));
+            txt.on('pointerout',  () => txt.setStyle({ color: '#2e2f2f' }));
             txt.on('pointerdown', () => fadeTo(this, item.scene));
             nx -= txt.width + 36;
         });
     }
 
     // ── HERO ──────────────────────────────────────────────────────
-    // Layout (all relative to cy):
-    //   +16  headline  "Hi, I'm\nFelix." 52px  (~120px tall)
-    //   +148 bio text  14px 4 lines             (~76px tall)
-    //   +236 buttons                            (38px tall)
-    //   card height = 290
+    // Fixed layout — no overlap guaranteed:
+    //   cy+16  headline  48px  2 lines ≈ 100px
+    //   cy+124 bio       13px  2 lines ≈ 40px
+    //   cy+178 buttons   38px
+    //   ch = 234
 
     buildHero(W) {
-        const cx = 40, cy = 72;
-        const cw = Math.min(510, Math.floor(W * 0.46));
-        const ch = 290;
+        const cx = 36, cy = 72;
+        const cw = Math.min(500, Math.floor(W * 0.44));
+        const ch = 240;
 
-        // Shadow
+        // Hard shadow
         const shad = this.add.graphics();
-        shad.fillStyle(HC.primary, 0.18);
-        shad.fillRect(cx + 8, cy + 8, cw, ch);
+        shad.fillStyle(0x000000, 0.35);
+        shad.fillRect(cx + 6, cy + 6, cw, ch);
 
-        // Card
+        // Card — semi-opaque so wallpaper shows through slightly
         const card = this.add.graphics();
-        card.fillStyle(0xedfbd4); card.fillRect(cx, cy, cw, ch);
+        card.fillStyle(0xedfbd4, 0.93); card.fillRect(cx, cy, cw, ch);
         card.fillStyle(HC.primary);
-        card.fillRect(cx,        cy,        cw, 5);   // top border
-        card.fillRect(cx,        cy,        8,  ch);  // left accent bar
-        card.fillRect(cx,        cy + ch - 5, cw, 5); // bottom border
+        card.fillRect(cx, cy,        cw, 5);
+        card.fillRect(cx, cy,        8,  ch);
+        card.fillRect(cx, cy + ch - 5, cw, 5);
 
         // Headline
         this.add.text(cx + 20, cy + 16, "Hi, I'm\nFelix.", {
-            fontFamily: H_HEAD, fontSize: '52px', fontStyle: 'bold',
-            color: '#1e5800', lineSpacing: 6
+            fontFamily: H_HEAD, fontSize: '48px', fontStyle: 'bold',
+            color: '#1e5800', lineSpacing: 8
         });
 
-        // Bio — starts well below headline, no overlap
-        this.add.text(cx + 20, cy + 148, [
+        // Bio — concise, 2 lines only, well below headline
+        this.add.text(cx + 20, cy + 126, [
             "I'm 12 years old. I love coding, gaming and running.",
-            "I have a little brother named Issac.",
-            "",
-            "I build browser games and AI tools — mostly",
-            "in JavaScript, Canvas and Phaser.js."
+            "I have a little brother named Issac."
         ].join('\n'), {
-            fontFamily: H_BODY, fontSize: '13px', color: '#2e2f2f', lineSpacing: 5
+            fontFamily: H_BODY, fontSize: '14px', color: '#2e2f2f', lineSpacing: 6
         });
 
-        // Buttons — pinned to bottom, no overlap with bio
-        const btnY = cy + ch - 52;
-        this.carvedBtn(cx + 20,  btnY, 188, 38, 'VIEW ALL PROJECTS', HC.primary,   '#d5ffbb', () => fadeTo(this, 'MainScene'));
-        this.carvedBtn(cx + 220, btnY, 148, 38, 'PLAY GAMES',        HC.secondary, '#ffefec', () => fadeTo(this, 'CPSScene'));
+        // Buttons — at cy+178, safely below bio (bio ends ~cy+164)
+        this.carvedBtn(cx + 20,  cy + 178, 188, 38, 'VIEW ALL PROJECTS', HC.primary,   '#d5ffbb', () => fadeTo(this, 'MainScene'));
+        this.carvedBtn(cx + 220, cy + 178, 148, 38, 'PLAY GAMES',        HC.secondary, '#ffefec', () => fadeTo(this, 'CPSScene'));
     }
 
     // ── ABOUT ME ──────────────────────────────────────────────────
 
     buildAboutMe(W) {
-        const heroRight = 40 + Math.min(510, Math.floor(W * 0.46)) + 24;
+        const heroRight = 36 + Math.min(500, Math.floor(W * 0.44)) + 20;
         const ax = heroRight, ay = 72;
-        const aw = W - heroRight - 40, ah = 290;
+        const aw = W - heroRight - 36, ah = 240;
 
         // Shadow
         const shad = this.add.graphics();
-        shad.fillStyle(HC.secondary, 0.15);
-        shad.fillRect(ax + 8, ay + 8, aw, ah);
+        shad.fillStyle(0x000000, 0.35);
+        shad.fillRect(ax + 6, ay + 6, aw, ah);
 
         // Card
         const card = this.add.graphics();
-        card.fillStyle(0xfff0e5); card.fillRect(ax, ay, aw, ah);
+        card.fillStyle(0xfff0e5, 0.93); card.fillRect(ax, ay, aw, ah);
         card.fillStyle(HC.secondary);
-        card.fillRect(ax, ay,        aw, 5);  // top border
-        card.fillRect(ax, ay,        8,  ah); // left accent
+        card.fillRect(ax, ay,         aw, 5);
+        card.fillRect(ax, ay,         8,  ah);
         card.fillRect(ax, ay + ah - 5, aw, 5);
 
-        // Title
         this.add.text(ax + 18, ay + 14, 'ABOUT ME', {
             fontFamily: H_HEAD, fontSize: '11px', fontStyle: 'bold',
             color: '#8f4816', letterSpacing: 3
         });
 
-        // Fact tiles — interactive hover with colour flip
+        // Fact tiles
         const facts = [
-            { icon: '🎂', label: 'AGE',     value: '12 years old',         col: HC.primary,   hex: '#256900', bg: 0xedfbd4 },
+            { icon: '🎂', label: 'AGE',     value: '12 years old',     col: HC.primary,   hex: '#256900', bg: 0xedfbd4 },
             { icon: '🎮', label: 'HOBBIES', value: 'Coding · Gaming\n· Running', col: HC.tertiary,  hex: '#006668', bg: 0xddfefe },
-            { icon: '👦', label: 'FAMILY',  value: 'Little bro\nIssac',    col: HC.secondary, hex: '#8f4816', bg: 0xfff0e5 },
-            { icon: '🛠️', label: 'STACK',   value: 'JS · Canvas\n· Phaser',col: 0x555555,    hex: '#444444', bg: 0xeeedec },
+            { icon: '👦', label: 'FAMILY',  value: 'Little bro\nIssac',col: HC.secondary, hex: '#8f4816', bg: 0xfff0e5 },
+            { icon: '🛠️', label: 'STACK',   value: 'JS · Canvas\n· Phaser', col: 0x555555, hex: '#444444', bg: 0xeeedec },
         ];
 
         const tileW = Math.floor((aw - 18 - (facts.length - 1) * 8) / facts.length);
-        const tileH = 170;
+        const tileH = 152;
         const tileY = ay + 40;
 
         facts.forEach((f, i) => {
@@ -172,45 +186,41 @@ class HomeScene extends Phaser.Scene {
 
             const draw = (hov) => {
                 tg.clear();
-                // shadow first so card draws on top
-                tg.fillStyle(0x000000, 0.1);
+                tg.fillStyle(0x000000, 0.08);
                 tg.fillRect(tx + 4, tileY + 4, tileW, tileH);
-                // card bg
                 tg.fillStyle(hov ? f.col : f.bg);
                 tg.fillRect(tx, tileY, tileW, tileH);
-                // bottom accent bar
                 tg.fillStyle(f.col);
                 tg.fillRect(tx, tileY + tileH - 4, tileW, 4);
             };
             draw(false);
 
-            // Invisible hit zone over whole tile
             const hit = this.add.rectangle(tx + tileW / 2, tileY + tileH / 2, tileW, tileH)
                 .setAlpha(0.001).setInteractive({ cursor: 'pointer' });
             hit.on('pointerover', () => draw(true));
             hit.on('pointerout',  () => draw(false));
 
-            this.add.text(tx + tileW / 2, tileY + 30, f.icon, {
-                fontFamily: H_HEAD, fontSize: '26px'
+            this.add.text(tx + tileW / 2, tileY + 26, f.icon, {
+                fontFamily: H_HEAD, fontSize: '24px'
             }).setOrigin(0.5);
 
-            this.add.text(tx + tileW / 2, tileY + 68, f.label, {
+            this.add.text(tx + tileW / 2, tileY + 62, f.label, {
                 fontFamily: H_HEAD, fontSize: '9px', fontStyle: 'bold',
                 color: f.hex, letterSpacing: 2
             }).setOrigin(0.5);
 
-            this.add.text(tx + tileW / 2, tileY + 90, f.value, {
+            this.add.text(tx + tileW / 2, tileY + 80, f.value, {
                 fontFamily: H_BODY, fontSize: '11px', color: '#2e2f2f',
                 wordWrap: { width: tileW - 8 }, align: 'center', lineSpacing: 3
             }).setOrigin(0.5, 0);
         });
 
-        // Quote strip at bottom of about-me card
-        const qy = ay + ah - 48;
+        // Quote strip
+        const qy = ay + ah - 44;
         const qg = this.add.graphics();
-        qg.fillStyle(HC.secondary, 0.1); qg.fillRect(ax + 18, qy, aw - 26, 36);
-        qg.fillStyle(HC.secondary); qg.fillRect(ax + 18, qy, 8, 36);
-        this.add.text(ax + 36, qy + 10, '"Build it. Break it. Build it better."', {
+        qg.fillStyle(HC.secondary, 0.1); qg.fillRect(ax + 18, qy, aw - 26, 34);
+        qg.fillStyle(HC.secondary); qg.fillRect(ax + 18, qy, 8, 34);
+        this.add.text(ax + 36, qy + 9, '"Build it. Break it. Build it better."', {
             fontFamily: H_BODY, fontSize: '12px', fontStyle: 'italic',
             color: '#8f4816', wordWrap: { width: aw - 54 }
         });
@@ -220,24 +230,24 @@ class HomeScene extends Phaser.Scene {
 
     buildFeaturedProjects(W, H) {
         const featured = PROJECTS.filter(p => p.featured);
-        // Sits just below both top panels (cy=72, ch=290, +gap 12)
-        const secY = 376;
+        // cy=72, ch=240, gap=12 → secY=324
+        const secY = 326;
 
-        this.add.text(40, secY, 'FEATURED PROJECTS', {
+        this.add.text(36, secY, 'FEATURED PROJECTS', {
             fontFamily: H_HEAD, fontSize: '12px', fontStyle: 'bold',
             color: '#256900', letterSpacing: 3
         });
 
         const hr = this.add.graphics();
-        hr.fillStyle(HC.outline, 0.2);
-        hr.fillRect(40, secY + 22, W - 80, 2);
+        hr.fillStyle(HC.outline, 0.25);
+        hr.fillRect(36, secY + 22, W - 72, 2);
 
-        const cardW = Math.floor((W - 80 - 24) / 3);
+        const cardW = Math.floor((W - 72 - 24) / 3);
         const cardH = H - secY - 66;
         const cardY = secY + 32;
 
         featured.forEach((proj, i) => {
-            const cx = 40 + i * (cardW + 12);
+            const cx = 36 + i * (cardW + 12);
             const biomes = [
                 { cardBg: 0xedfbd4, border: HC.primary,   nameCol: '#1e5800', textCol: '#2e4a1e' },
                 { cardBg: 0xddfefe, border: HC.tertiary,  nameCol: '#005d5f', textCol: '#1a3a3b' },
@@ -247,30 +257,31 @@ class HomeScene extends Phaser.Scene {
 
             // Shadow
             const shad = this.add.graphics();
-            shad.fillStyle(bm.border, 0.18); shad.fillRect(cx + 6, cardY + 6, cardW, cardH);
+            shad.fillStyle(0x000000, 0.25); shad.fillRect(cx + 6, cardY + 6, cardW, cardH);
 
             // Card
             const bg = this.add.graphics();
-            bg.fillStyle(bm.cardBg); bg.fillRect(cx, cardY, cardW, cardH);
+            bg.fillStyle(bm.cardBg, 0.96); bg.fillRect(cx, cardY, cardW, cardH);
             bg.fillStyle(bm.border);
-            bg.fillRect(cx, cardY,        cardW, 5); // top border
-            bg.fillRect(cx, cardY,        8, cardH); // left accent
-            bg.fillRect(cx, cardY + cardH - 5, cardW, 5); // bottom border
+            bg.fillRect(cx, cardY,            cardW, 5);
+            bg.fillRect(cx, cardY,            8, cardH);
+            bg.fillRect(cx, cardY + cardH - 5, cardW, 5);
 
-            // Project name
+            // Name
             this.add.text(cx + 18, cardY + 14, proj.name, {
                 fontFamily: H_HEAD, fontSize: '15px', fontStyle: 'bold', color: bm.nameCol
             });
 
-            // Short description
+            // Description
             this.add.text(cx + 18, cardY + 42, proj.description, {
                 fontFamily: H_BODY, fontSize: '12px', color: bm.textCol,
                 wordWrap: { width: cardW - 30 }, lineSpacing: 3
             });
 
-            // First paragraph of story (capped at ~200 chars for space)
-            const firstPara = proj.story.split('\n\n')[0].slice(0, 220);
-            this.add.text(cx + 18, cardY + 88, firstPara + (proj.story.split('\n\n')[0].length > 220 ? '…' : ''), {
+            // Story first para
+            const para = proj.story.split('\n\n')[0];
+            const capped = para.length > 210 ? para.slice(0, 210) + '…' : para;
+            this.add.text(cx + 18, cardY + 88, capped, {
                 fontFamily: H_BODY, fontSize: '11px', color: '#5b5b5c',
                 wordWrap: { width: cardW - 30 }, lineSpacing: 3
             });
@@ -289,12 +300,12 @@ class HomeScene extends Phaser.Scene {
                 tagX += tw + 6;
             });
 
-            // VISIT link
+            // VISIT
             if (proj.url && proj.url !== '#') {
                 const link = this.add.text(cx + cardW - 14, cardY + cardH - 14, 'VISIT →', {
                     fontFamily: H_HEAD, fontSize: '11px', fontStyle: 'bold', color: bm.nameCol
                 }).setOrigin(1, 1).setInteractive({ cursor: 'pointer' });
-                link.on('pointerover', () => link.setAlpha(0.65));
+                link.on('pointerover', () => link.setAlpha(0.6));
                 link.on('pointerout',  () => link.setAlpha(1));
                 link.on('pointerdown', () => window.open(proj.url, '_blank'));
             }
@@ -305,8 +316,8 @@ class HomeScene extends Phaser.Scene {
 
     buildFooter(W, H) {
         const fg = this.add.graphics();
-        fg.fillStyle(HC.inverseSurf); fg.fillRect(0, H - 40, W, 40);
-        fg.fillStyle(HC.primaryFix);  fg.fillRect(0, H - 40, W, 4);
+        fg.fillStyle(HC.inverseSurf, 0.95); fg.fillRect(0, H - 40, W, 40);
+        fg.fillStyle(HC.primaryFix);        fg.fillRect(0, H - 40, W, 4);
         this.add.text(W / 2, H - 20, '© Felix · Age 12 · Built block by block', {
             fontFamily: H_BODY, fontSize: '12px', color: '#95f169'
         }).setOrigin(0.5);
@@ -318,7 +329,7 @@ class HomeScene extends Phaser.Scene {
         const g = this.add.graphics();
         const draw = (hov) => {
             g.clear();
-            g.fillStyle(bgCol, hov ? 1 : 0.9); g.fillRect(x, y, w, h);
+            g.fillStyle(bgCol, hov ? 1 : 0.92); g.fillRect(x, y, w, h);
             g.fillStyle(0x000000, hov ? 0.35 : 0.2);
             g.fillRect(x, y + h - 4, w, 4); g.fillRect(x + w - 4, y, 4, h);
             g.fillStyle(0xffffff, 0.2);

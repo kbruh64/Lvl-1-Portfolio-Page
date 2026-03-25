@@ -12,7 +12,7 @@ class CPSScene extends Phaser.Scene {
         this.clicks = 0; this.started = false;
         this.finished = false; this.remaining = this.DURATION;
 
-        this.cameras.main.fadeIn(380, 0, 0, 0);
+        slideIn(this);
 
         this.drawNetherBg(W, H);
         this.buildUI(W, H);

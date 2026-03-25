@@ -15,7 +15,7 @@ class WhackAMoleScene extends Phaser.Scene {
         this.spawnTimer = null;
         this.countdownTimer = null;
 
-        this.cameras.main.fadeIn(380, 0, 0, 0);
+        slideIn(this);
 
         this.drawBg(W, H);
         this.buildUI(W, H);

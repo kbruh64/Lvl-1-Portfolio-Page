@@ -23,7 +23,7 @@ class AdminScene extends Phaser.Scene {
     create() {
         const W = this.scale.width;
         const H = this.scale.height;
-        this.cameras.main.fadeIn(380, 0, 0, 0);
+        slideIn(this);
 
         this.drawBg(W, H);
         this.buildHeader(W);

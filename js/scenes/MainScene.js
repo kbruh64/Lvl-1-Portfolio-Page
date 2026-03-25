@@ -64,7 +64,7 @@ class MainScene extends Phaser.Scene {
             for (let gy = 0; gy <= H; gy += 32)
                 bgG.fillCircle(gx, gy, 1);
 
-        this.cameras.main.fadeIn(380, 0, 0, 0);
+        slideIn(this);
 
         this.buildProjectGrid(W, H);
         this.buildHeader(W);

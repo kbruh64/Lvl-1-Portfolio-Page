@@ -125,9 +125,29 @@ async function checkPassword(input) {
     return hex === ADMIN_PASSWORD_HASH;
 }
 
-// ── SCENE TRANSITION ──────────────────────────────────────────────────────────
-// Fade out to black then start a new scene. Call instead of this.scene.start().
+// ── SCENE TRANSITION (slide) ──────────────────────────────────────────────────
+// Slide the current scene out to the left, then start the next scene.
+// In each scene's create(), call slideIn(this) to slide in from the right.
 function fadeTo(scene, key) {
-    scene.cameras.main.fadeOut(260, 0, 0, 0);
-    scene.cameras.main.once('camerafadeoutcomplete', () => scene.scene.start(key));
+    if (scene._sliding) return;
+    scene._sliding = true;
+    const W = scene.scale.width;
+    scene.tweens.add({
+        targets: scene.cameras.main,
+        x: -W,
+        duration: 360,
+        ease: 'Power2.easeIn',
+        onComplete: () => scene.scene.start(key)
+    });
+}
+
+function slideIn(scene) {
+    const W = scene.scale.width;
+    scene.cameras.main.x = W;
+    scene.tweens.add({
+        targets: scene.cameras.main,
+        x: 0,
+        duration: 420,
+        ease: 'Power2.easeOut'
+    });
 }

@@ -14,7 +14,7 @@ class PuzzleScene extends Phaser.Scene {
         this.tileObjs = [];
         this.state = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 
-        this.cameras.main.fadeIn(380, 0, 0, 0);
+        slideIn(this);
 
         this.drawDeepDarkBg(W, H);
         this.buildUI(W, H);
