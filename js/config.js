@@ -124,3 +124,10 @@ async function checkPassword(input) {
     const hex = [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('');
     return hex === ADMIN_PASSWORD_HASH;
 }
+
+// ── SCENE TRANSITION ──────────────────────────────────────────────────────────
+// Fade out to black then start a new scene. Call instead of this.scene.start().
+function fadeTo(scene, key) {
+    scene.cameras.main.fadeOut(260, 0, 0, 0);
+    scene.cameras.main.once('camerafadeoutcomplete', () => scene.scene.start(key));
+}

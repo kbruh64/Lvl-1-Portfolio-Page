@@ -23,6 +23,8 @@ class AdminScene extends Phaser.Scene {
     create() {
         const W = this.scale.width;
         const H = this.scale.height;
+        this.cameras.main.fadeIn(380, 0, 0, 0);
+
         this.drawBg(W, H);
         this.buildHeader(W);
         if (isAdminLoggedIn()) {
@@ -56,7 +58,7 @@ class AdminScene extends Phaser.Scene {
         }).setOrigin(0, 0.5).setInteractive({ cursor: 'pointer' })
           .on('pointerover', function() { this.setColor('#5a2e0e'); })
           .on('pointerout',  function() { this.setColor('#8f4816'); })
-          .on('pointerdown', () => this.scene.start('MainScene'));
+          .on('pointerdown', () => fadeTo(this, 'MainScene'));
 
         this.add.text(W / 2, 36, isAdminLoggedIn() ? '⚙️  ADMIN PANEL' : '🔒  ADMIN LOGIN', {
             fontFamily: A_HEAD, fontSize: '26px', fontStyle: 'bold',
@@ -139,7 +141,7 @@ class AdminScene extends Phaser.Scene {
         const ok = await checkPassword(this.typedPw);
         if (ok) {
             setAdminLoggedIn(true);
-            this.scene.start('MainScene');
+            fadeTo(this, 'MainScene');
         } else {
             this.errorText.setText('WRONG PASSWORD — TRY AGAIN');
             this.cameras.main.shake(180, 0.009);
@@ -173,7 +175,7 @@ class AdminScene extends Phaser.Scene {
 
         this.makeBtn(W / 2, startY + totalH + 30, 180, 40, 'LOGOUT', ADMIN_COL.error, '#ffefec', () => {
             setAdminLoggedIn(false);
-            this.scene.start('MainScene');
+            fadeTo(this, 'MainScene');
         });
     }
 

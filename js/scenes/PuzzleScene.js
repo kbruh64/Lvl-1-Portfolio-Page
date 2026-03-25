@@ -14,6 +14,8 @@ class PuzzleScene extends Phaser.Scene {
         this.tileObjs = [];
         this.state = [1, 2, 3, 4, 5, 6, 7, 8, 0];
 
+        this.cameras.main.fadeIn(380, 0, 0, 0);
+
         this.drawDeepDarkBg(W, H);
         this.buildUI(W, H);
         this.renderGrid(W, H);
@@ -64,7 +66,7 @@ class PuzzleScene extends Phaser.Scene {
         }).setOrigin(0, 0.5).setInteractive({ cursor: 'pointer' })
           .on('pointerover', function() { this.setColor('#ffffff'); })
           .on('pointerout',  function() { this.setColor('#5dfbfe'); })
-          .on('pointerdown', () => this.scene.start('MainScene'));
+          .on('pointerdown', () => fadeTo(this, 'MainScene'));
 
         this.add.text(W / 2, 36, '🔮  SLIDING PUZZLE  🔮', {
             fontFamily: "'Space Grotesk', sans-serif",

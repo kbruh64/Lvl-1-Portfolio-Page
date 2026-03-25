@@ -15,6 +15,8 @@ class WhackAMoleScene extends Phaser.Scene {
         this.spawnTimer = null;
         this.countdownTimer = null;
 
+        this.cameras.main.fadeIn(380, 0, 0, 0);
+
         this.drawBg(W, H);
         this.buildUI(W, H);
         this.buildGrid(W, H);
@@ -61,7 +63,7 @@ class WhackAMoleScene extends Phaser.Scene {
         }).setOrigin(0, 0.5).setDepth(11).setInteractive({ cursor: 'pointer' });
         back.on('pointerover', () => back.setColor('#95f169'));
         back.on('pointerout',  () => back.setColor('#1e5800'));
-        back.on('pointerdown', () => { this.clearTimers(); this.scene.start('MainScene'); });
+        back.on('pointerdown', () => { this.clearTimers(); fadeTo(this, 'MainScene'); });
 
         this.add.text(W / 2, 34, '🔨  WHACK-A-MOLE  🔨', {
             fontFamily: "'Space Grotesk', sans-serif",
@@ -339,7 +341,7 @@ class WhackAMoleScene extends Phaser.Scene {
             fontFamily: "'Space Grotesk', sans-serif",
             fontSize: '12px', color: '#aaffcc'
         }).setOrigin(0.5).setDepth(32).setInteractive({ cursor: 'pointer' });
-        backBtn.on('pointerdown', () => this.scene.start('MainScene'));
+        backBtn.on('pointerdown', () => fadeTo(this, 'MainScene'));
     }
 
     clearTimers() {

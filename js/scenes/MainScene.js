@@ -64,6 +64,8 @@ class MainScene extends Phaser.Scene {
             for (let gy = 0; gy <= H; gy += 32)
                 bgG.fillCircle(gx, gy, 1);
 
+        this.cameras.main.fadeIn(380, 0, 0, 0);
+
         this.buildProjectGrid(W, H);
         this.buildHeader(W);
         this.buildFooter(W, H);
@@ -80,7 +82,7 @@ class MainScene extends Phaser.Scene {
         });
 
         this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.BACKTICK)
-            .on('down', () => this.scene.start('AdminScene'));
+            .on('down', () => fadeTo(this, 'AdminScene'));
     }
 
     // ── HEADER ────────────────────────────────────────────────────
@@ -105,7 +107,7 @@ class MainScene extends Phaser.Scene {
               const now = this.time.now;
               if (now - this.lastTitleClick > 2500) this.titleClicks = 0;
               this.lastTitleClick = now;
-              if (++this.titleClicks >= 5) { this.titleClicks = 0; this.scene.start('AdminScene'); }
+              if (++this.titleClicks >= 5) { this.titleClicks = 0; fadeTo(this, 'AdminScene'); }
           });
 
         if (this.isAdmin) {
@@ -126,7 +128,7 @@ class MainScene extends Phaser.Scene {
                 fontFamily: FONT_HEAD, fontSize: '13px', fontStyle: 'bold',
                 color: '#d5ffbb'
             }).setOrigin(0.5).setDepth(52).setInteractive({ cursor: 'pointer' })
-              .on('pointerdown', () => this.scene.start('AdminScene'));
+              .on('pointerdown', () => fadeTo(this, 'AdminScene'));
         }
 
         if (this.maxScroll > 0) {
@@ -184,7 +186,7 @@ class MainScene extends Phaser.Scene {
             }).setOrigin(0.5).setDepth(52).setInteractive({ cursor: 'pointer' })
               .on('pointerover', () => drawBtn(true))
               .on('pointerout',  () => drawBtn(false))
-              .on('pointerdown', () => this.scene.start(def.scene));
+              .on('pointerdown', () => fadeTo(this, def.scene));
         });
     }
 

@@ -12,6 +12,8 @@ class CPSScene extends Phaser.Scene {
         this.clicks = 0; this.started = false;
         this.finished = false; this.remaining = this.DURATION;
 
+        this.cameras.main.fadeIn(380, 0, 0, 0);
+
         this.drawNetherBg(W, H);
         this.buildUI(W, H);
     }
@@ -66,7 +68,7 @@ class CPSScene extends Phaser.Scene {
         }).setOrigin(0, 0.5).setInteractive({ cursor: 'pointer' })
           .on('pointerover', function() { this.setColor('#ffffff'); })
           .on('pointerout',  function() { this.setColor('#f95630'); })
-          .on('pointerdown', () => this.scene.start('MainScene'));
+          .on('pointerdown', () => fadeTo(this, 'MainScene'));
 
         this.add.text(W / 2, 36, '🔥  CPS TEST  🔥', {
             fontFamily: "'Space Grotesk', sans-serif",
