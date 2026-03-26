@@ -41,12 +41,12 @@ class HomeScene extends Phaser.Scene {
         try {
             const img = this.add.image(W / 2, H / 2, 'mc-bg');
             const scale = Math.max(W / img.width, H / img.height);
-            img.setScale(scale).setAlpha(0.18);
+            img.setScale(scale).setAlpha(0.55);
         } catch(e) {}
 
-        // Light wash to blend image with theme colour
+        // Light wash so cards stay readable
         const wash = this.add.graphics();
-        wash.fillStyle(0xf8f6f6, 0.55); wash.fillRect(0, 0, W, H);
+        wash.fillStyle(0xf8f6f6, 0.28); wash.fillRect(0, 0, W, H);
 
         // Voxel dot overlay
         const dots = this.add.graphics();
