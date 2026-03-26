@@ -33,21 +33,16 @@ class HomeScene extends Phaser.Scene {
 
         slideIn(this);
 
-        // Fallback solid bg
-        const bgG = this.add.graphics();
-        bgG.fillStyle(HC.bg); bgG.fillRect(0, 0, W, H);
+        // Solid fallback
+        this.add.graphics().fillStyle(HC.bg).fillRect(0, 0, W, H);
 
-        // Wallpaper — subtle, behind everything
-        try {
+        // Wallpaper
+        if (this.textures.exists('mc-bg')) {
             const img = this.add.image(W / 2, H / 2, 'mc-bg');
-            const scale = Math.max(W / img.width, H / img.height);
-            img.setScale(scale).setAlpha(0.38);
-        } catch(e) {}
-
-        // Dark wash to kill the neon-green effect + keep cards readable
-        const wash = this.add.graphics();
-        wash.fillStyle(0x000000, 0.22); wash.fillRect(0, 0, W, H);
-        wash.fillStyle(0xf8f6f6, 0.45); wash.fillRect(0, 0, W, H);
+            img.setScale(Math.max(W / img.width, H / img.height));
+            // Dark overlay to tone down brightness
+            this.add.graphics().fillStyle(0x000000, 0.45).fillRect(0, 0, W, H);
+        }
 
         // Voxel dot overlay
         const dots = this.add.graphics();
