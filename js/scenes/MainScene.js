@@ -317,9 +317,7 @@ class MainScene extends Phaser.Scene {
         );
         hit.on('pointerover', () => drawBg(true));
         hit.on('pointerout',  () => drawBg(false));
-        if (proj.url && proj.url !== '#') {
-            hit.on('pointerdown', () => window.open(proj.url, '_blank'));
-        }
+        hit.on('pointerdown', () => fadeTo(this, 'ProjectScene', { id: proj.id }));
 
         if (this.isAdmin) this.addStatusButtons(proj, x, y, w, h);
     }

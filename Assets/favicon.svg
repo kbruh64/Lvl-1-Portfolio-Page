@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background block -->
+  <rect width="32" height="32" fill="#256900"/>
+  <!-- Top face highlight -->
+  <rect width="32" height="32" fill="#95f169" opacity="0.18"/>
+  <!-- Bottom-right shadow -->
+  <rect x="0" y="28" width="32" height="4" fill="#000" opacity="0.3"/>
+  <rect x="28" y="0" width="4" height="32" fill="#000" opacity="0.2"/>
+  <!-- F letter -->
+  <rect x="8"  y="7"  width="16" height="3" fill="#ffffff"/>
+  <rect x="8"  y="7"  width="3"  height="18" fill="#ffffff"/>
+  <rect x="8"  y="15" width="11" height="3" fill="#ffffff"/>
+</svg>

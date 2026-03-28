@@ -29,18 +29,25 @@ class HomeScene extends Phaser.Scene {
 
         slideIn(this);
 
-        // Solid fallback
+        // Solid fallback always visible
         this.add.graphics().fillStyle(HC.bg).fillRect(0, 0, W, H);
 
-        // Wallpaper — load from HTML img tag (works on file:// and http://)
-        const el = document.getElementById('mc-bg-el');
-        if (el && el.naturalWidth > 0) {
-            if (!this.textures.exists('mc-bg')) {
-                this.textures.addImage('mc-bg', el);
-            }
-            const img = this.add.image(W / 2, H / 2, 'mc-bg');
+        // Wallpaper — grab from hidden <img> tag, works on file:// and http://
+        const applyWallpaper = () => {
+            if (this.scene.key !== 'HomeScene') return; // guard if scene switched
+            const el = document.getElementById('mc-bg-el');
+            if (!el || el.naturalWidth === 0) return;
+            if (!this.textures.exists('mc-bg')) this.textures.addImage('mc-bg', el);
+            const img = this.add.image(W / 2, H / 2, 'mc-bg').setDepth(0);
             img.setScale(Math.max(W / img.width, H / img.height));
-            this.add.graphics().fillStyle(0x000000, 0.42).fillRect(0, 0, W, H);
+            this.add.graphics().fillStyle(0x000000, 0.42).fillRect(0, 0, W, H).setDepth(0);
+        };
+
+        const el = document.getElementById('mc-bg-el');
+        if (el && el.complete && el.naturalWidth > 0) {
+            applyWallpaper();
+        } else if (el) {
+            el.addEventListener('load', applyWallpaper, { once: true });
         }
 
         // Voxel dot overlay
@@ -277,7 +284,7 @@ class HomeScene extends Phaser.Scene {
                 }).setOrigin(1, 1).setInteractive({ cursor: 'pointer' });
                 link.on('pointerover', () => link.setAlpha(0.6));
                 link.on('pointerout',  () => link.setAlpha(1));
-                link.on('pointerdown', () => window.open(proj.url, '_blank'));
+                link.on('pointerdown', () => fadeTo(this, 'ProjectScene', { id: proj.id }));
             }
         });
     }

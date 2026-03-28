@@ -147,11 +147,11 @@ async function checkPassword(input) {
 }
 
 // ── SCENE TRANSITIONS — fast black-screen fade ────────────────────────────────
-function fadeTo(scene, key) {
+function fadeTo(scene, key, data) {
     if (scene._fading) return;
     scene._fading = true;
     scene.cameras.main.fadeOut(80, 0, 0, 0);
-    scene.cameras.main.once('camerafadeoutcomplete', () => scene.scene.start(key));
+    scene.cameras.main.once('camerafadeoutcomplete', () => scene.scene.start(key, data));
 }
 
 function slideIn(scene) {

@@ -8,7 +8,7 @@ const gameConfig = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    scene: [HomeScene, MainScene, CPSScene, WhackAMoleScene, PuzzleScene, AdminScene]
+    scene: [HomeScene, MainScene, ProjectScene, CPSScene, WhackAMoleScene, PuzzleScene, AdminScene]
 };
 
 new Phaser.Game(gameConfig);
