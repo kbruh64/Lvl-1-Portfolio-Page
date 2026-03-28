@@ -29,7 +29,27 @@ class HomeScene extends Phaser.Scene {
 
         slideIn(this);
 
-        // Voxel dot overlay (drawn on the transparent canvas — wallpaper shows through from body CSS)
+        // Wallpaper — draw via offscreen canvas so it works on file:// and http://
+        const drawWallpaper = (el) => {
+            try {
+                const oc = document.createElement('canvas');
+                oc.width = W; oc.height = H;
+                const ctx = oc.getContext('2d');
+                const s = Math.max(W / el.naturalWidth, H / el.naturalHeight);
+                const dw = el.naturalWidth * s, dh = el.naturalHeight * s;
+                ctx.drawImage(el, (W - dw) / 2, (H - dh) / 2, dw, dh);
+                ctx.fillStyle = 'rgba(0,0,0,0.42)';
+                ctx.fillRect(0, 0, W, H);
+                if (this.textures.exists('mc-bg')) this.textures.remove('mc-bg');
+                this.textures.addCanvas('mc-bg', oc);
+                this.add.image(W / 2, H / 2, 'mc-bg').setDepth(-1);
+            } catch (e) { /* image blocked — fallback bg shows */ }
+        };
+        const el = document.getElementById('mc-bg-el');
+        if (el && el.complete && el.naturalWidth > 0) drawWallpaper(el);
+        else if (el) el.addEventListener('load', () => drawWallpaper(el), { once: true });
+
+        // Voxel dot overlay
         const dots = this.add.graphics();
         dots.fillStyle(0x000000, 0.06);
         for (let gx = 0; gx <= W; gx += 32)

@@ -11,9 +11,8 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* MC wallpaper lives on the body — CSS always loads local files */
         body {
-            background: #1e2a14 url('assets/mc-bg.jpg') center / cover no-repeat fixed;
+            background: #1e2a14;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -21,12 +20,10 @@
             overflow: hidden;
         }
 
-        /* Wrap = dark overlay that dims the wallpaper */
         #wrap {
             position: relative;
             width: 1280px;
             height: 720px;
-            background: rgba(0, 0, 0, 0.45);
         }
 
         #game-container {
@@ -42,6 +39,7 @@
     </style>
 </head>
 <body>
+    <img id="mc-bg-el" src="assets/mc-bg.jpg" style="display:none" crossorigin="">
     <div id="wrap">
         <div id="game-container"></div>
     </div>
