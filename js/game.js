@@ -1,5 +1,5 @@
 const gameConfig = {
-    type: Phaser.AUTO,
+    type: Phaser.CANVAS,
     width: 1280,
     height: 720,
     parent: 'game-container',
