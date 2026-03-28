@@ -11,19 +11,54 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: #f8f6f6;
+            background: #1a1a1a;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
         }
-        #game-container canvas { display: block; }
+        #wrap {
+            position: relative;
+            width: 1280px;
+            height: 720px;
+        }
+        /* MC wallpaper — sits behind the Phaser canvas, browser loads it natively */
+        #mc-wallpaper {
+            position: absolute;
+            inset: 0;
+            background: url('assets/mc-bg.jpg') center / cover no-repeat;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        #mc-wallpaper.visible { opacity: 1; }
+        /* Dark overlay on top of wallpaper, below canvas */
+        #mc-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.44);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        #mc-overlay.visible { opacity: 1; }
+        #game-container {
+            position: absolute;
+            inset: 0;
+        }
+        #game-container canvas {
+            display: block;
+            background: transparent !important;
+        }
     </style>
 </head>
 <body>
-    <img id="mc-bg-el" src="assets/mc-bg.jpg" style="display:none">
-    <div id="game-container"></div>
+    <div id="wrap">
+        <div id="mc-wallpaper"></div>
+        <div id="mc-overlay"></div>
+        <div id="game-container"></div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/scenes/HomeScene.js"></script>

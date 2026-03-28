@@ -29,30 +29,19 @@ class HomeScene extends Phaser.Scene {
 
         slideIn(this);
 
-        // Solid fallback always visible
-        this.add.graphics().fillStyle(HC.bg).fillRect(0, 0, W, H);
+        // Show CSS wallpaper div (browser loads it — works on file:// and http://)
+        document.getElementById('mc-wallpaper').classList.add('visible');
+        document.getElementById('mc-overlay').classList.add('visible');
 
-        // Wallpaper — grab from hidden <img> tag, works on file:// and http://
-        const applyWallpaper = () => {
-            if (this.scene.key !== 'HomeScene') return; // guard if scene switched
-            const el = document.getElementById('mc-bg-el');
-            if (!el || el.naturalWidth === 0) return;
-            if (!this.textures.exists('mc-bg')) this.textures.addImage('mc-bg', el);
-            const img = this.add.image(W / 2, H / 2, 'mc-bg').setDepth(0);
-            img.setScale(Math.max(W / img.width, H / img.height));
-            this.add.graphics().fillStyle(0x000000, 0.42).fillRect(0, 0, W, H).setDepth(0);
-        };
+        // Hide wallpaper when leaving this scene
+        this.events.once('shutdown', () => {
+            document.getElementById('mc-wallpaper').classList.remove('visible');
+            document.getElementById('mc-overlay').classList.remove('visible');
+        });
 
-        const el = document.getElementById('mc-bg-el');
-        if (el && el.complete && el.naturalWidth > 0) {
-            applyWallpaper();
-        } else if (el) {
-            el.addEventListener('load', applyWallpaper, { once: true });
-        }
-
-        // Voxel dot overlay
+        // Voxel dot overlay on the canvas (drawn over the CSS wallpaper)
         const dots = this.add.graphics();
-        dots.fillStyle(0x000000, 0.04);
+        dots.fillStyle(0x000000, 0.06);
         for (let gx = 0; gx <= W; gx += 32)
             for (let gy = 64; gy <= H; gy += 32)
                 dots.fillRect(gx, gy, 2, 2);

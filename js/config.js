@@ -155,5 +155,6 @@ function fadeTo(scene, key, data) {
 }
 
 function slideIn(scene) {
+    scene._fading = false;
     scene.cameras.main.fadeIn(100, 0, 0, 0);
 }
