@@ -24,82 +24,103 @@ class WhackAMoleScene extends Phaser.Scene {
     }
 
     drawBg(W, H) {
-        // Sky
-        this.add.rectangle(0, 0, W, H * 0.45, 0xdbeeff).setOrigin(0, 0);
-        // Grass
-        this.add.rectangle(0, H * 0.45, W, H * 0.55, 0xd4f0c0).setOrigin(0, 0);
-
-        // Grass texture blobs
         const g = this.add.graphics();
-        g.fillStyle(0xbbdd99, 0.5);
-        for (let i = 0; i < 30; i++) {
-            g.fillEllipse(
-                Phaser.Math.Between(0, W),
-                Phaser.Math.Between(H * 0.45, H),
-                Phaser.Math.Between(40, 120), 20
-            );
-        }
 
-        // Clouds
-        [200, 500, 900, 1150].forEach(cx => {
-            const cy = Phaser.Math.Between(60, 140);
-            const cg = this.add.graphics();
-            cg.fillStyle(0xffffff, 0.8);
-            cg.fillEllipse(cx, cy, 100, 40);
-            cg.fillEllipse(cx + 30, cy - 12, 70, 35);
-            cg.fillEllipse(cx - 25, cy - 8, 60, 30);
+        // Desert sky — warm haze gradient (two bands)
+        g.fillStyle(0xf5d98c); g.fillRect(0, 0, W, H * 0.5);
+        g.fillStyle(0xe8c46a, 0.5); g.fillRect(0, H * 0.25, W, H * 0.25);
+
+        // Sand ground
+        g.fillStyle(0xd4a84b); g.fillRect(0, H * 0.5, W, H * 0.5);
+
+        // Sand dune bumps
+        g.fillStyle(0xbf923a, 0.5);
+        [100, 320, 580, 820, 1050].forEach(dx => {
+            g.fillEllipse(dx, H * 0.5, 220, 40);
         });
+
+        // Sandstone block strips on ground
+        g.fillStyle(0xc49a30, 0.35);
+        for (let bx = 0; bx < W; bx += 64)
+            g.fillRect(bx, H * 0.5 + 10, 60, 28);
+        for (let bx = 32; bx < W; bx += 64)
+            g.fillRect(bx, H * 0.5 + 42, 60, 28);
+
+        // Cacti (simple pixel shapes)
+        [180, 500, 850, 1150].forEach(cx => {
+            const cy = H * 0.5;
+            g.fillStyle(0x2e7d32);
+            g.fillRect(cx - 8, cy - 90, 16, 90);   // trunk
+            g.fillRect(cx - 30, cy - 66, 22, 12);   // left arm
+            g.fillRect(cx - 30, cy - 80, 12, 16);
+            g.fillRect(cx + 8,  cy - 52, 22, 12);   // right arm
+            g.fillRect(cx + 18, cy - 66, 12, 16);
+        });
+
+        // Voxel dots overlay (Stitch pattern)
+        g.fillStyle(0x8f4816, 0.12);
+        for (let gx = 0; gx <= W; gx += 32)
+            for (let gy = 68; gy <= H; gy += 32)
+                g.fillRect(gx, gy, 2, 2);
+
+        // Sun
+        g.fillStyle(0xffee44, 0.9);
+        g.fillRect(W - 120, 80, 56, 56);
+        g.fillStyle(0xffdd00, 0.5);
+        g.fillRect(W - 128, 88, 8, 40);
+        g.fillRect(W - 56,  88, 8, 40);
+        g.fillRect(W - 108, 72, 40, 8);
+        g.fillRect(W - 108, 136, 40, 8);
     }
 
     buildUI(W, H) {
-        // Stitch Overworld header — surface-container-high, 4px primary border
+        // Desert biome header — sandstone, 4px secondary border
         const hg = this.add.graphics().setDepth(10);
-        hg.fillStyle(0xe3e2e2); hg.fillRect(0, 0, W, 68);
-        hg.fillStyle(0x256900); hg.fillRect(0, 64, W, 4); // 4px lush forest border
+        hg.fillStyle(0x3d2000); hg.fillRect(0, 0, W, 68);
+        hg.fillStyle(0x8f4816); hg.fillRect(0, 64, W, 4);
 
         const back = this.add.text(20, 34, '← BACK', {
             fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: '14px', fontStyle: 'bold', color: '#1e5800'
+            fontSize: '14px', fontStyle: 'bold', color: '#ffc5a5'
         }).setOrigin(0, 0.5).setDepth(11).setInteractive({ cursor: 'pointer' });
-        back.on('pointerover', () => back.setColor('#95f169'));
-        back.on('pointerout',  () => back.setColor('#1e5800'));
+        back.on('pointerover', () => back.setColor('#ffffff'));
+        back.on('pointerout',  () => back.setColor('#ffc5a5'));
         back.on('pointerdown', () => { this.clearTimers(); fadeTo(this, 'MainScene'); });
 
-        this.add.text(W / 2, 34, '🔨  WHACK-A-MOLE  🔨', {
+        this.add.text(W / 2, 34, '🏜️  WHACK-A-MOLE  🏜️', {
             fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: '26px', fontStyle: 'bold', color: '#1e5800'
+            fontSize: '26px', fontStyle: 'bold', color: '#ffc5a5'
         }).setOrigin(0.5).setDepth(11);
 
         // Score + time chips — carved inventory slots (Stitch)
-        const chipDraw = (cx, label, isScore) => {
+        const chipDraw = (cx) => {
             const cw = 160, ch = 36, bx = cx - cw / 2, by = 75;
             const cg = this.add.graphics().setDepth(10);
-            cg.fillStyle(0xffffff); cg.fillRect(bx, by, cw, ch);
-            cg.fillStyle(0x256900); cg.fillRect(bx, by + ch - 3, cw, 3);
-            cg.fillStyle(0x000000, 0.1); cg.fillRect(bx + cw - 3, by, 3, ch);
-            return cg;
+            cg.fillStyle(0x5a3000); cg.fillRect(bx, by, cw, ch);
+            cg.fillStyle(0x8f4816); cg.fillRect(bx, by + ch - 3, cw, 3);
+            cg.fillStyle(0xffffff, 0.08); cg.fillRect(bx, by, cw, 3);
         };
-        chipDraw(W / 2 - 200, 'SCORE', true);
-        chipDraw(W / 2 + 200, 'TIME', false);
+        chipDraw(W / 2 - 200);
+        chipDraw(W / 2 + 200);
 
         this.scoreText = this.add.text(W / 2 - 200, 93, 'SCORE: 0', {
             fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: '16px', fontStyle: 'bold', color: '#1e5800'
+            fontSize: '16px', fontStyle: 'bold', color: '#ffc5a5'
         }).setOrigin(0.5).setDepth(11);
 
         this.timerText = this.add.text(W / 2 + 200, 93, 'TIME: 30', {
             fontFamily: "'Space Grotesk', sans-serif",
-            fontSize: '16px', fontStyle: 'bold', color: '#8f4816'
+            fontSize: '16px', fontStyle: 'bold', color: '#ffee44'
         }).setOrigin(0.5).setDepth(11);
 
-        // Bottom bar — lush forest dark
+        // Bottom bar — desert dark
         const bg2 = this.add.graphics().setDepth(10);
-        bg2.fillStyle(0x1e5800); bg2.fillRect(0, H - 46, W, 46);
-        bg2.fillStyle(0x95f169); bg2.fillRect(0, H - 46, W, 4);
+        bg2.fillStyle(0x3d2000); bg2.fillRect(0, H - 46, W, 46);
+        bg2.fillStyle(0x8f4816); bg2.fillRect(0, H - 46, W, 4);
 
         this.reactionText = this.add.text(W / 2, H - 23, 'HIT A MOLE TO SEE YOUR REACTION TIME!', {
             fontFamily: "'Work Sans', sans-serif",
-            fontSize: '12px', color: '#95f169'
+            fontSize: '12px', color: '#ffc5a5'
         }).setOrigin(0.5).setDepth(11);
     }
 

@@ -24,10 +24,6 @@ class HomeScene extends Phaser.Scene {
         super({ key: 'HomeScene' });
     }
 
-    preload() {
-        this.load.image('mc-bg', 'assets/mc-bg.jpg');
-    }
-
     create() {
         const W = this.scale.width, H = this.scale.height;
 
@@ -36,12 +32,15 @@ class HomeScene extends Phaser.Scene {
         // Solid fallback
         this.add.graphics().fillStyle(HC.bg).fillRect(0, 0, W, H);
 
-        // Wallpaper
-        if (this.textures.exists('mc-bg')) {
+        // Wallpaper — load from HTML img tag (works on file:// and http://)
+        const el = document.getElementById('mc-bg-el');
+        if (el && el.naturalWidth > 0) {
+            if (!this.textures.exists('mc-bg')) {
+                this.textures.addImage('mc-bg', el);
+            }
             const img = this.add.image(W / 2, H / 2, 'mc-bg');
             img.setScale(Math.max(W / img.width, H / img.height));
-            // Dark overlay to tone down brightness
-            this.add.graphics().fillStyle(0x000000, 0.45).fillRect(0, 0, W, H);
+            this.add.graphics().fillStyle(0x000000, 0.42).fillRect(0, 0, W, H);
         }
 
         // Voxel dot overlay
