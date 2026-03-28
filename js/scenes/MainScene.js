@@ -209,7 +209,7 @@ class MainScene extends Phaser.Scene {
         PROJECTS.forEach((proj, idx) => {
             const col   = idx % COLS;
             const row   = Math.floor(idx / COLS);
-            const biome = BIOMES[idx % BIOMES.length];
+            const biome = BIOME_MAP[proj.biome] || BIOME_MAP.stone;
             this.createCard(
                 proj,
                 startX + col * (CARD_W + GAP_X),

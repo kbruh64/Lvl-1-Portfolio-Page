@@ -1,10 +1,22 @@
 // ============================================================
 //  YOUR PROJECTS — edit name, description, url, tech as needed
 // ============================================================
+// ── BIOME MAP — each project gets its own Minecraft biome ─────────────────────
+const BIOME_MAP = {
+    forest:    { cardBg: 0xedfbd4, border: 0x256900, shadow: 0x1a4a00, nameCol: '#1e5800', tagBg: 0x95f169, tagTx: '#154300', label: 'Lush Forest' },
+    desert:    { cardBg: 0xfff0e5, border: 0x8f4816, shadow: 0x5a2e0e, nameCol: '#8f4816', tagBg: 0xffc5a5, tagTx: '#582500', label: 'Desert' },
+    ocean:     { cardBg: 0xddfefe, border: 0x006668, shadow: 0x003d3e, nameCol: '#005d5f', tagBg: 0x5dfbfe, tagTx: '#004446', label: 'Ocean' },
+    nether:    { cardBg: 0xffe8e0, border: 0xb02500, shadow: 0x7a1a00, nameCol: '#b02500', tagBg: 0xf95630, tagTx: '#520c00', label: 'Nether' },
+    stone:     { cardBg: 0xeeedec, border: 0x555555, shadow: 0x333333, nameCol: '#3b3b3c', tagBg: 0xdddddd, tagTx: '#2e2f2f', label: 'Stone Cave' },
+    deep_dark: { cardBg: 0xd4ecec, border: 0x006668, shadow: 0x003d3e, nameCol: '#003d3e', tagBg: 0x5dfbfe, tagTx: '#002222', label: 'Deep Dark' },
+    snowy:     { cardBg: 0xeaf4ff, border: 0x4fc3f7, shadow: 0x1a7ab0, nameCol: '#0d4d6e', tagBg: 0xb3e5fc, tagTx: '#013a52', label: 'Snowy Tundra' },
+};
+
 const PROJECTS = [
     {
         id: 'super-bros',
         name: '🥊 Super Bros',
+        biome: 'deep_dark',
         description: 'A 2-player platform brawler with multiple themes and sound effects.',
         url: 'https://super-bros-dun.vercel.app/',
         tech: ['HTML', 'CSS', 'JS'],
@@ -14,6 +26,7 @@ const PROJECTS = [
     {
         id: 'snake-io',
         name: '🐍 Snake.io',
+        biome: 'forest',
         description: 'Multiplayer snake game with custom skins and a live leaderboard.',
         url: 'https://snake-io-iota.vercel.app/',
         tech: ['Canvas', 'JS'],
@@ -23,6 +36,7 @@ const PROJECTS = [
     {
         id: 'image-animator',
         name: '✨ Image Animator',
+        biome: 'ocean',
         description: 'Upload any image and animate it with AI. Also extracts GIF frames.',
         url: 'https://image-animator-gamma.vercel.app/',
         tech: ['TensorFlow.js', 'Canvas'],
@@ -32,6 +46,7 @@ const PROJECTS = [
     {
         id: '2player-shooter',
         name: '🔫 2 Player Shooter',
+        biome: 'nether',
         description: 'Local co-op shooter where two players share one keyboard.',
         url: 'https://2playergameyay.vercel.app/',
         tech: ['Phaser.js', 'JS'],
@@ -40,6 +55,7 @@ const PROJECTS = [
     {
         id: 'nutella-sandwich',
         name: '🍞 Nutella Sandwich',
+        biome: 'desert',
         description: 'An interactive step-by-step guide to making a Nutella sandwich.',
         url: 'https://how-to-make-a-nutella-sandwich.vercel.app/',
         tech: ['Phaser.js', 'JS'],
@@ -48,6 +64,7 @@ const PROJECTS = [
     {
         id: 'mace-time',
         name: '⚒️ Mace Time',
+        biome: 'nether',
         description: 'Use a Minecraft mace to smash mobs in this fast-paced action game.',
         url: '#',
         tech: ['JS'],
@@ -56,6 +73,7 @@ const PROJECTS = [
     {
         id: '2d-minecraft',
         name: '⛏️ 2D Minecraft',
+        biome: 'stone',
         description: 'A 2D browser recreation of Minecraft. No download required.',
         url: '#',
         tech: ['Canvas', 'JS'],
@@ -64,6 +82,7 @@ const PROJECTS = [
     {
         id: 'click-it',
         name: '🖱️ Click It!',
+        biome: 'forest',
         description: 'Idle clicker game with 40+ skins, 20+ dimensions and achievements.',
         url: 'https://first-repo-gray.vercel.app/',
         tech: ['HTML', 'CSS', 'JS'],
@@ -72,6 +91,7 @@ const PROJECTS = [
     {
         id: 'voidpet-dungeon',
         name: '👾 Voidpet Dungeon',
+        biome: 'deep_dark',
         description: 'A canvas-based dungeon crawler featuring void creatures.',
         url: 'https://monsterpet-dungeon.vercel.app/',
         tech: ['Canvas', 'JS'],
@@ -80,6 +100,7 @@ const PROJECTS = [
     {
         id: 'value-scanner',
         name: '🔍 Value Scanner',
+        biome: 'snowy',
         description: 'Draw a circle around any item and Claude AI estimates its value.',
         url: 'https://value-scanner-e0p8dxaxt-felix-aos-projects.vercel.app/',
         tech: ['Claude AI', 'JS'],

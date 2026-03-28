@@ -220,12 +220,7 @@ class HomeScene extends Phaser.Scene {
 
         featured.forEach((proj, i) => {
             const cx = 36 + i * (cardW + 12);
-            const biomes = [
-                { cardBg: 0xedfbd4, border: HC.primary,   nameCol: '#1e5800', descCol: '#2e4a1e', proudCol: '#3a7a00' },
-                { cardBg: 0xddfefe, border: HC.tertiary,  nameCol: '#005d5f', descCol: '#1a3a3b', proudCol: '#007a7c' },
-                { cardBg: 0xfff0e5, border: HC.secondary, nameCol: '#8f4816', descCol: '#3a2010', proudCol: '#b05820' },
-            ];
-            const bm = biomes[i];
+            const bm = BIOME_MAP[proj.biome] || BIOME_MAP.stone;
 
             // Shadow
             this.add.graphics().fillStyle(0x000000, 0.3).fillRect(cx + 6, cardY + 6, cardW, cardH);
@@ -245,7 +240,7 @@ class HomeScene extends Phaser.Scene {
 
             // Description — the short one-liner (this IS the description, not the intro)
             this.add.text(cx + 18, cardY + 46, proj.description, {
-                fontFamily: H_BODY, fontSize: '13px', color: bm.descCol,
+                fontFamily: H_BODY, fontSize: '13px', color: bm.nameCol,
                 wordWrap: { width: cardW - 30 }, lineSpacing: 4
             });
 
@@ -258,7 +253,7 @@ class HomeScene extends Phaser.Scene {
             const proudSentence = secondPara.split('.')[0] + '.';
             this.add.text(cx + 18, cardY + 102, '⭐ ' + proudSentence, {
                 fontFamily: H_BODY, fontSize: '11px', fontStyle: 'italic',
-                color: bm.proudCol, wordWrap: { width: cardW - 30 }, lineSpacing: 3
+                color: bm.nameCol, wordWrap: { width: cardW - 30 }, lineSpacing: 3
             });
 
             // Tech tags
