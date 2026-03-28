@@ -10,43 +10,31 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* MC wallpaper lives on the body — CSS always loads local files */
         body {
-            background: #1a1a1a;
+            background: #1e2a14 url('assets/mc-bg.jpg') center / cover no-repeat fixed;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
         }
+
+        /* Wrap = dark overlay that dims the wallpaper */
         #wrap {
             position: relative;
             width: 1280px;
             height: 720px;
+            background: rgba(0, 0, 0, 0.45);
         }
-        /* MC wallpaper — sits behind the Phaser canvas, browser loads it natively */
-        #mc-wallpaper {
-            position: absolute;
-            inset: 0;
-            background: url('assets/mc-bg.jpg') center / cover no-repeat;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-        #mc-wallpaper.visible { opacity: 1; }
-        /* Dark overlay on top of wallpaper, below canvas */
-        #mc-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.44);
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-        #mc-overlay.visible { opacity: 1; }
+
         #game-container {
             position: absolute;
             inset: 0;
         }
+
+        /* Canvas must be transparent so body wallpaper shows on HomeScene */
         #game-container canvas {
             display: block;
             background: transparent !important;
@@ -55,8 +43,6 @@
 </head>
 <body>
     <div id="wrap">
-        <div id="mc-wallpaper"></div>
-        <div id="mc-overlay"></div>
         <div id="game-container"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>

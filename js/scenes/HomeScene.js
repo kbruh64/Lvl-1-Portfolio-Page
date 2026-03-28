@@ -29,17 +29,7 @@ class HomeScene extends Phaser.Scene {
 
         slideIn(this);
 
-        // Show CSS wallpaper div (browser loads it — works on file:// and http://)
-        document.getElementById('mc-wallpaper').classList.add('visible');
-        document.getElementById('mc-overlay').classList.add('visible');
-
-        // Hide wallpaper when leaving this scene
-        this.events.once('shutdown', () => {
-            document.getElementById('mc-wallpaper').classList.remove('visible');
-            document.getElementById('mc-overlay').classList.remove('visible');
-        });
-
-        // Voxel dot overlay on the canvas (drawn over the CSS wallpaper)
+        // Voxel dot overlay (drawn on the transparent canvas — wallpaper shows through from body CSS)
         const dots = this.add.graphics();
         dots.fillStyle(0x000000, 0.06);
         for (let gx = 0; gx <= W; gx += 32)
