@@ -129,10 +129,10 @@ async function checkPassword(input) {
 function fadeTo(scene, key) {
     if (scene._fading) return;
     scene._fading = true;
-    scene.cameras.main.fadeOut(120, 0, 0, 0);
+    scene.cameras.main.fadeOut(80, 0, 0, 0);
     scene.cameras.main.once('camerafadeoutcomplete', () => scene.scene.start(key));
 }
 
 function slideIn(scene) {
-    scene.cameras.main.fadeIn(160, 0, 0, 0);
+    scene.cameras.main.fadeIn(100, 0, 0, 0);
 }
