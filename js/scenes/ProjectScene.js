@@ -120,6 +120,54 @@ class ProjectScene extends Phaser.Scene {
         });
     }
 
+    draw_bamboo(g, W, H) {
+        g.fillStyle(0xc8e6c9, 0.4); g.fillRect(0, 0, W, H);
+        [60, 160, 280, 420, 560, 700, 860, 1020, 1160].forEach(bx => {
+            const h = 200 + (bx % 120);
+            g.fillStyle(0x388e3c); g.fillRect(bx - 8, H - h, 16, h);
+            g.fillStyle(0x2e7d32); g.fillRect(bx - 8, H - h, 16, 6);
+            g.fillStyle(0x2e7d32); g.fillRect(bx - 8, H - h * 0.6, 16, 4);
+            // leaves
+            g.fillStyle(0x43a047, 0.7); g.fillRect(bx - 30, H - h - 10, 60, 20);
+            g.fillStyle(0x388e3c, 0.6); g.fillRect(bx - 20, H - h - 24, 40, 16);
+        });
+    }
+
+    draw_mesa(g, W, H) {
+        g.fillStyle(0xf4a460, 0.4); g.fillRect(0, 0, W, H);
+        // Terracotta layers
+        const cols = [0xbf360c, 0xe64a19, 0xff7043, 0xffab91, 0xbf360c];
+        cols.forEach((c, i) => {
+            g.fillStyle(c, 0.35); g.fillRect(0, H * 0.3 + i * 40, W, 38);
+        });
+        // Mesa buttes
+        [[150, 0.55], [500, 0.45], [900, 0.6], [1150, 0.5]].forEach(([mx, top]) => {
+            g.fillStyle(0xbf360c, 0.5); g.fillRect(mx - 60, H * top, 120, H * (1 - top));
+            g.fillStyle(0xff7043, 0.3); g.fillRect(mx - 60, H * top, 120, 12);
+        });
+    }
+
+    draw_end(g, W, H) {
+        g.fillStyle(0x1a0d2e); g.fillRect(0, 0, W, H);
+        // End stone floor
+        g.fillStyle(0xe8e0b0, 0.25);
+        for (let bx = 0; bx < W; bx += 48) g.fillRect(bx, H - 50, 44, 46);
+        // Chorus plants
+        [100, 300, 600, 850, 1100].forEach(cx => {
+            g.fillStyle(0x7c4dff, 0.7);
+            g.fillRect(cx - 6, H - 130, 12, 80);
+            g.fillRect(cx - 20, H - 130, 12, 40);
+            g.fillRect(cx + 8,  H - 110, 12, 30);
+        });
+        // Stars
+        for (let i = 0; i < 60; i++) {
+            const sx = (i * 211) % W, sy = (i * 137) % (H * 0.7);
+            g.fillStyle(0xffffff, 0.4 + (i % 3) * 0.2); g.fillRect(sx, sy, 2, 2);
+        }
+        // End portal glow
+        g.fillStyle(0x7c4dff, 0.06); g.fillRect(0, 0, W, H);
+    }
+
     draw_snowy(g, W, H) {
         // Sky
         g.fillStyle(0xd6eeff, 0.5); g.fillRect(0, 0, W, H * 0.55);
@@ -147,6 +195,9 @@ class ProjectScene extends Phaser.Scene {
             stone:     { n: 18, col: 0x888888, s: [2, 4],  vx: [-0.2, 0.2], vy: [0.3, 0.7],  a: 0.28 },
             deep_dark: { n: 14, col: 0x5dfbfe, s: [4, 10], vx: [-0.3, 0.3], vy: [-0.3, 0.3], a: 0.5  },
             snowy:     { n: 40, col: 0xffffff, s: [2, 5],  vx: [-0.4, 0.4], vy: [0.8, 2.0],  a: 0.75 },
+            bamboo:    { n: 20, col: 0x43a047, s: [3, 6],  vx: [0.2, 0.6],  vy: [0.5, 1.2],  a: 0.5  },
+            mesa:      { n: 25, col: 0xff7043, s: [2, 5],  vx: [0.4, 1.2],  vy: [0.1, 0.4],  a: 0.4  },
+            end:       { n: 16, col: 0x7c4dff, s: [3, 8],  vx: [-0.3, 0.3], vy: [-0.4, 0.4], a: 0.5  },
         };
         const cfg = configs[biome] || configs.stone;
 

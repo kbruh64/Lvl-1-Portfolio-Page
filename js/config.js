@@ -10,6 +10,9 @@ const BIOME_MAP = {
     stone:     { cardBg: 0xeeedec, border: 0x555555, shadow: 0x333333, nameCol: '#3b3b3c', tagBg: 0xdddddd, tagTx: '#2e2f2f', label: 'Stone Cave' },
     deep_dark: { cardBg: 0xd4ecec, border: 0x006668, shadow: 0x003d3e, nameCol: '#003d3e', tagBg: 0x5dfbfe, tagTx: '#002222', label: 'Deep Dark' },
     snowy:     { cardBg: 0xeaf4ff, border: 0x4fc3f7, shadow: 0x1a7ab0, nameCol: '#0d4d6e', tagBg: 0xb3e5fc, tagTx: '#013a52', label: 'Snowy Tundra' },
+    bamboo:    { cardBg: 0xe8f8e0, border: 0x2e7d32, shadow: 0x1b5e20, nameCol: '#1b5e20', tagBg: 0xa5d6a7, tagTx: '#0a3d0a', label: 'Bamboo Jungle' },
+    mesa:      { cardBg: 0xfce8d8, border: 0xbf360c, shadow: 0x7f0000, nameCol: '#7f0000', tagBg: 0xffab91, tagTx: '#4e0000', label: 'Badlands Mesa' },
+    end:       { cardBg: 0xf5f0ff, border: 0x7c4dff, shadow: 0x4a148c, nameCol: '#4a148c', tagBg: 0xd1c4e9, tagTx: '#311b92', label: 'The End' },
 };
 
 const PROJECTS = [
@@ -26,7 +29,7 @@ const PROJECTS = [
     {
         id: 'snake-io',
         name: '🐍 Snake.io',
-        biome: 'forest',
+        biome: 'ocean',
         description: 'Multiplayer snake game with custom skins and a live leaderboard.',
         url: 'https://snake-io-iota.vercel.app/',
         tech: ['Canvas', 'JS'],
@@ -36,7 +39,7 @@ const PROJECTS = [
     {
         id: 'image-animator',
         name: '✨ Image Animator',
-        biome: 'ocean',
+        biome: 'end',
         description: 'Upload any image and animate it with AI. Also extracts GIF frames.',
         url: 'https://image-animator-gamma.vercel.app/',
         tech: ['TensorFlow.js', 'Canvas'],
@@ -46,7 +49,7 @@ const PROJECTS = [
     {
         id: '2player-shooter',
         name: '🔫 2 Player Shooter',
-        biome: 'nether',
+        biome: 'bamboo',
         description: 'Local co-op shooter where two players share one keyboard.',
         url: 'https://2playergameyay.vercel.app/',
         tech: ['Phaser.js', 'JS'],
@@ -64,7 +67,7 @@ const PROJECTS = [
     {
         id: 'mace-time',
         name: '⚒️ Mace Time',
-        biome: 'nether',
+        biome: 'mesa',
         description: 'Use a Minecraft mace to smash mobs in this fast-paced action game.',
         url: '#',
         tech: ['JS'],
@@ -82,7 +85,7 @@ const PROJECTS = [
     {
         id: 'click-it',
         name: '🖱️ Click It!',
-        biome: 'forest',
+        biome: 'nether',
         description: 'Idle clicker game with 40+ skins, 20+ dimensions and achievements.',
         url: 'https://first-repo-gray.vercel.app/',
         tech: ['HTML', 'CSS', 'JS'],
@@ -91,7 +94,7 @@ const PROJECTS = [
     {
         id: 'voidpet-dungeon',
         name: '👾 Voidpet Dungeon',
-        biome: 'deep_dark',
+        biome: 'stone',
         description: 'A canvas-based dungeon crawler featuring void creatures.',
         url: 'https://monsterpet-dungeon.vercel.app/',
         tech: ['Canvas', 'JS'],

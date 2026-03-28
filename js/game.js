@@ -3,7 +3,7 @@ const gameConfig = {
     width: 1280,
     height: 720,
     parent: 'game-container',
-    backgroundColor: 'rgba(0,0,0,0)',
+    transparent: true,
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
